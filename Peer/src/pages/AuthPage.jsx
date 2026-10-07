@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 import { supabase } from '../lib/Supabaseclient'
+import ThemeToggle from '../components/Themetoggle.jsx'
+import LanguageToggle from '../components/Languagetoggle.jsx'
 
 export default function AuthPage() {
   const [mode, setMode] = useState('signin') // 'signin' | 'signup'
@@ -12,6 +15,7 @@ export default function AuthPage() {
   const [busy, setBusy] = useState(false)
 
   const { signIn, signUp, checkIsAdmin } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -20,8 +24,6 @@ export default function AuthPage() {
     setMsg(null)
     try {
       if (mode === 'signup') {
-        // role is always 'student' here — mentor status is granted via the
-        // approved_mentors list (see mentor_applications.sql), not chosen at signup.
         const { error } = await signUp({ email, password, fullName, role: 'student' })
         if (error) throw error
         setMsg({ type: 'ok', text: 'Check your email to confirm your account, then sign in.' })
@@ -48,14 +50,22 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-5">
       <div className="max-w-sm w-full rounded border border-line bg-paperDim p-6">
-        <Link to="/" className="text-xs text-inkSoft hover:text-ink">
-          ← back
-        </Link>
-        <h1 className="font-display font-semibold tracking-tight text-2xl mt-3">{mode === 'signup' ? 'Create your account' : 'Welcome back'}</h1>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-xs text-inkSoft hover:text-ink">
+            {t('back')}
+          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LanguageToggle />
+          </div>
+        </div>
+        <h1 className="font-display font-semibold tracking-tight text-2xl mt-3">
+          {mode === 'signup' ? t('createAccount') : t('welcomeBack')}
+        </h1>
 
         <div className="flex gap-4 text-sm mt-5 border-b border-line">
-          <TabButton active={mode === 'signin'} onClick={() => setMode('signin')} label="Sign in" />
-          <TabButton active={mode === 'signup'} onClick={() => setMode('signup')} label="Sign up" />
+          <TabButton active={mode === 'signin'} onClick={() => setMode('signin')} label={t('signIn')} />
+          <TabButton active={mode === 'signup'} onClick={() => setMode('signup')} label={t('signUp')} />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3 mt-5">
@@ -63,7 +73,7 @@ export default function AuthPage() {
             <input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Full name"
+              placeholder={t('fullName')}
               required
               className="rounded px-3 py-2 text-sm w-full"
             />
@@ -72,7 +82,7 @@ export default function AuthPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder={t('email')}
             required
             className="rounded px-3 py-2 text-sm w-full"
           />
@@ -80,7 +90,7 @@ export default function AuthPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder={t('password')}
             required
             minLength={6}
             className="rounded px-3 py-2 text-sm w-full"
@@ -91,7 +101,7 @@ export default function AuthPage() {
             className="rounded px-5 py-2.5 text-sm font-medium w-full disabled:opacity-60"
             style={{ background: 'var(--gradient)', color: '#04252b' }}
           >
-            {busy ? 'Please wait…' : mode === 'signup' ? 'Sign up' : 'Sign in'}
+            {busy ? t('pleaseWait') : mode === 'signup' ? t('signUp') : t('signIn')}
           </button>
         </form>
 
@@ -102,9 +112,9 @@ export default function AuthPage() {
         )}
 
         <p className="text-xs text-inkSoft mt-4">
-          Want to teach instead?{' '}
+          {t('wantTeachInstead')}{' '}
           <Link to="/mentor-application" style={{ color: 'var(--teal-mid)' }}>
-            Apply to be a mentor
+            {t('applyMentor')}
           </Link>
         </p>
       </div>

@@ -13,7 +13,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --paper: #071A20;
     --paper-dim: #0C242B;
     --ink: #E9F5F6;
@@ -23,6 +23,17 @@
     --cyan: #1FE8DF;
     --line: #163A42;
   }
+}
+
+:root[data-theme='dark'] {
+  --paper: #071A20;
+  --paper-dim: #0C242B;
+  --ink: #E9F5F6;
+  --ink-soft: #8FB0B6;
+  --teal-deep: #0B7690;
+  --teal-mid: #12A0BC;
+  --cyan: #1FE8DF;
+  --line: #163A42;
 }
 
 body {
