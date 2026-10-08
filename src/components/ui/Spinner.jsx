@@ -30,7 +30,7 @@ export function PageSpinner() {
 
 export function SkeletonCard() {
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-card" aria-hidden="true">
+    <div className="rounded-2xl bg-card border border-border p-6 shadow-card" aria-hidden="true">
       <div className="flex items-start gap-4">
         <div className="skeleton h-16 w-16 rounded-full" />
         <div className="flex-1 space-y-2">

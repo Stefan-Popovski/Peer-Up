@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, CheckCircle2, ShieldAlert, Send, Sparkles } from 'lucide-react'
 import { Button } from '../components/ui/Button'
+import { useLanguage } from '../context/LanguageContext'
 
 export function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
@@ -9,6 +10,7 @@ export function ContactPage() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [sending, setSending] = useState(false)
+  const { t } = useLanguage()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,13 +27,13 @@ export function ContactPage() {
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-semibold mb-6 border border-primary/20">
             <Sparkles className="w-4 h-4 text-accent" />
-            <span>Контакт центар</span>
+            <span>{t('contactBadge')}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-dark mb-4 leading-tight max-w-3xl mx-auto">
-            Тука сме за <span className="text-gradient">тебе</span>
+            {t('contactTitle')} <span className="text-gradient">{t('contactTitleHighlight')}</span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-            Имаш прашање, сугестија или сакаш соработка? Испрати ни порака.
+            {t('contactSubtitle')}
           </p>
         </div>
       </section>
@@ -43,56 +45,56 @@ export function ContactPage() {
             {submitted ? (
               <div className="py-10 text-center space-y-4">
                 <CheckCircle2 className="w-14 h-14 text-green mx-auto" />
-                <h2 className="text-2xl font-bold text-dark">Пораката е испратена!</h2>
+                <h2 className="text-2xl font-bold text-dark">{t('contactSent')}</h2>
                 <p className="text-sm text-muted-foreground">
-                  Ти благодариме. Нашиот тим ќе ти одговори во рок од 24 часа.
+                  {t('contactSentDesc')}
                 </p>
                 <Button variant="default" onClick={() => setSubmitted(false)} className="mt-4">
-                  Испрати нова порака
+                  {t('contactSendNew')}
                 </Button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <h2 className="text-xl font-bold text-dark mb-4">Испрати ни порака</h2>
+                <h2 className="text-xl font-bold text-dark mb-4">{t('contactFormTitle')}</h2>
 
                 <div>
                   <label className="block text-xs font-semibold text-dark mb-1">
-                    Име и презиме *
+                    {t('contactNameLabel')}
                   </label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ана Петровска"
+                    placeholder={t('contactNamePlaceholder')}
                     className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-dark mb-1">
-                    Емаил адреса *
+                    {t('contactEmailLabel')}
                   </label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ana@primer.mk"
+                    placeholder={t('contactEmailPlaceholder')}
                     className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-dark mb-1">
-                    Порака *
+                    {t('contactMessageLabel')}
                   </label>
                   <textarea
                     rows={4}
                     required
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Твојата порака..."
+                    placeholder={t('contactMessagePlaceholder')}
                     className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none resize-none"
                   />
                 </div>
@@ -106,7 +108,7 @@ export function ContactPage() {
                   disabled={!name || !email || !message}
                 >
                   <Send className="w-4 h-4 mr-2" />
-                  Испрати порака
+                  {t('contactSendBtn')}
                 </Button>
               </form>
             )}
@@ -119,9 +121,9 @@ export function ContactPage() {
                 <Mail className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground font-semibold">Е-пошта за директен контакт</p>
+                <p className="text-xs text-muted-foreground font-semibold">{t('contactEmailDirectLabel')}</p>
                 <a href="mailto:contact@peerup.mk" className="text-base font-bold text-dark hover:text-primary transition-colors">
-                  contact@peerup.mk
+                  info@peerup.mk
                 </a>
               </div>
             </div>
@@ -130,13 +132,13 @@ export function ContactPage() {
               <div className="flex items-start gap-3">
                 <ShieldAlert className="w-6 h-6 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-bold text-dark mb-1">Безбедност и заштита</h3>
+                  <h3 className="font-bold text-dark mb-1">{t('contactSafetyTitle')}</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                    Ако забележиш несоодветно однесување, искористи го овој безбедносен канал за доверлива пријава.
+                    {t('contactSafetyDesc')}
                   </p>
                   <Link to="/report">
                     <Button variant="default" size="sm">
-                      Пријави проблем
+                      {t('contactReportBtn')}
                     </Button>
                   </Link>
                 </div>

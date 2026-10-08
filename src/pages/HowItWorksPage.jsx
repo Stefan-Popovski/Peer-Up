@@ -1,65 +1,98 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Calendar, Video, Trophy, CheckCircle, ShieldCheck, HeartHandshake, Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '../components/ui/Button'
+import { useLanguage } from '../context/LanguageContext'
 
 export function HowItWorksPage() {
-  const steps = [
+  const { t, language } = useLanguage()
+  const isMk = language !== 'en'
+
+  const steps = useMemo(() => [
     {
       num: '01',
       icon: Search,
-      title: 'Пребарај и избери ментор',
-      description:
-        'Избери го предметот што ти задава потешкотии (Математика, Физика, Хемија, Јазици, Програмирање итн.). Прегледај ги верификуваните ментори, нивните натпреварувачки успеси, оценки од други ученици и цената по час.',
-      highlights: ['Филтрирај според достапност и цена', 'Провери натпреварувачки достигнувања', 'Реални рецензии од врсници'],
+      title: isMk ? 'Пребарај и избери ментор' : 'Search & choose a mentor',
+      description: isMk
+        ? 'Избери го предметот што ти задава потешкотии (Математика, Физика, Хемија, Јазици, Програмирање итн.). Прегледај ги верификуваните ментори, нивните натпреварувачки успеси, оценки од други ученици и цената по час.'
+        : 'Choose the subject you need help with (Math, Physics, Chemistry, Languages, Programming, etc.). Browse verified mentors, their competition achievements, student ratings, and hourly rates.',
+      highlights: isMk
+        ? ['Филтрирај според достапност и цена', 'Провери натпреварувачки достигнувања', 'Реални рецензии од врсници']
+        : ['Filter by availability & price', 'Check competition achievements', 'Real reviews from peers'],
     },
     {
       num: '02',
       icon: Calendar,
-      title: 'Закажи термин според твој распоред',
-      description:
-        'Избери датум и време кои најмногу ти одговараат. Без фиксни неделни обврски — можеш да закажеш часови за подготовка за контролна, натпревар или редовно неделно вежбање.',
-      highlights: ['Флексибилни сесии од 60 минути', 'Инстантна потврда на е-пошта', 'Лесно презакажување при потреба'],
+      title: isMk ? 'Закажи термин според твој распоред' : 'Schedule a time that fits your calendar',
+      description: isMk
+        ? 'Избери датум и време кои најмногу ти одговараат. Без фиксни неделни обврски — можеш да закажеш часови за подготовка за контролна, натпревар или редовно неделно вежбање.'
+        : 'Choose the date and time that work best for you. No rigid weekly lock-in — schedule sessions for exam prep, competitions, or regular practice.',
+      highlights: isMk
+        ? ['Флексибилни сесии од 60 минути', 'Инстантна потврда на е-пошта', 'Лесно презакажување при потреба']
+        : ['Flexible 60-minute sessions', 'Instant email confirmation', 'Easy rescheduling when needed'],
     },
     {
       num: '03',
       icon: Video,
-      title: 'Учи онлајн од удобноста на твојот дом',
-      description:
-        'Часовите се одвиваат 100% онлајн преку Zoom или Google Meet. Користете споделување екран, интерактивна дигитална табла и решавајте задачи рамо до рамо, без губење време и пари на патување низ градот.',
-      highlights: ['Без патување и гужви', 'Интерактивна виртуелна табла', 'Директно прашување без срам'],
+      title: isMk ? 'Учете онлајн од удобноста на Вашиот дом' : 'Learn online from the comfort of home',
+      description: isMk
+        ? 'Часовите се одвиваат 100% онлајн преку Google Meet. Користете споделување екран, интерактивна дигитална табла и решавајте задачи рамо до рамо, без губење време и пари на патување низ градот.'
+        : 'Lessons take place 100% online via Google Meet. Use screen sharing, interactive digital whiteboards, and solve problems side by side without commuting.',
+      highlights: isMk
+        ? ['Без патување и гужви', 'Интерактивна виртуелна табла', 'Директно прашување без срам']
+        : ['No travel or commuting', 'Interactive virtual whiteboard', 'Direct questions without hesitation'],
     },
     {
       num: '04',
       icon: Trophy,
-      title: 'Постигни ги твоите академски цели',
-      description:
-        'Гледај како твоите оценки и самодоверба растат! Твојот ментор ќе ти помогне не само со моменталните задачи, туку и ќе те научи како поефикасно да учиш и да размислуваш самостојно.',
-      highlights: ['Повисоки оценки и петки', 'Подготовка за натпревари и матура', 'Развивање критичко размислување'],
+      title: isMk ? 'Постигни ги твоите академски цели' : 'Achieve your academic goals',
+      description: isMk
+        ? 'Гледајте како Вашите оценки и самодоверба растат! Вашиот ментор ќе ти помогне не само со моменталните задачи, туку и ќе те научи како поефикасно да учиш и да размислуваш самостојно.'
+        : 'Watch your grades and confidence grow! Your mentor helps not only with current homework, but also teaches you how to study effectively and think independently.',
+      highlights: isMk
+        ? ['Повисоки оценки и петки', 'Подготовка за натпревари и матура', 'Развивање критичко размислување']
+        : ['Higher grades & top marks', 'Preparation for competitions & finals', 'Developing critical thinking'],
     },
-  ]
+  ], [isMk])
 
-  const comparisons = [
+  const comparisons = useMemo(() => [
     {
-      feature: 'Пристап на предавање',
-      peerUp: 'Другарски и разбирлив јазик, без страв од погрешни одговори',
-      traditional: 'Често строг, авторитетен и формален пристап',
+      feature: isMk ? 'Пристап на предавање' : 'Teaching approach',
+      peerUp: isMk
+        ? 'Другарски и разбирлив јазик, без страв од погрешни одговори'
+        : 'Friendly, relatable language with zero fear of wrong answers',
+      traditional: isMk
+        ? 'Често строг, авторитетен и формален пристап'
+        : 'Often strict, authoritative, and formal approach',
     },
     {
-      feature: 'Локација',
-      peerUp: '100% онлајн, учи од твојата соба или каде и да си',
-      traditional: 'Патување до наставникот, губење време во сообраќај',
+      feature: isMk ? 'Локација' : 'Location',
+      peerUp: isMk
+        ? '100% онлајн, учи од твојата соба или каде и да си'
+        : '100% online, learn from your room or anywhere you are',
+      traditional: isMk
+        ? 'Патување до наставникот, губење време во сообраќај'
+        : 'Commuting to the tutor, wasted time in traffic',
     },
     {
-      feature: 'Цена',
-      peerUp: 'Достапни цени од €8 до €12 по час',
-      traditional: 'Често над €20-€30 по час без транспарентност',
+      feature: isMk ? 'Цена' : 'Price',
+      peerUp: isMk
+        ? 'Достапни цени од €8 до €12 по час'
+        : 'Affordable rates from €8 to €12 per hour',
+      traditional: isMk
+        ? 'Често над €20-€30 по час без транспарентност'
+        : 'Often over €20-€30 per hour with no transparency',
     },
     {
-      feature: 'Флексибилност',
-      peerUp: 'Закажуваш кога тебе ти одговара, менуваш ментор во секое време',
-      traditional: 'Фиксни термини кои тешко се менуваат',
+      feature: isMk ? 'Флексибилност' : 'Flexibility',
+      peerUp: isMk
+        ? 'Закажуваш кога тебе ти одговара, менуваш ментор во секое време'
+        : 'Book whenever it fits you, switch mentors anytime',
+      traditional: isMk
+        ? 'Фиксни термини кои тешко се менуваат'
+        : 'Rigid slots that are difficult to reschedule',
     },
-  ]
+  ], [isMk])
 
   return (
     <div className="min-h-screen pt-24 pb-20">
@@ -68,25 +101,25 @@ export function HowItWorksPage() {
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-semibold mb-6 border border-primary/20">
             <Sparkles className="w-4 h-4 text-accent" />
-            <span>Како функционира PeerUp</span>
+            <span>{t('howBadge')}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-dark mb-6 leading-tight max-w-4xl mx-auto">
-            Едноставен пат од прашање до{' '}
-            <span className="text-gradient">одличен успех</span>
+            {t('howTitle')}{' '}
+            <span className="text-gradient">{t('howTitleHighlight')}</span>
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
-            Платформа создадена за ученици од млади талентирани ментори. Без стрес, без комплицирани процедури, со максимална посветеност.
+            {t('howSubtitle')}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/mentori">
               <Button variant="hero" size="lg" className="shadow-lg shadow-primary/25">
-                Најди ментор сега
+                {t('howFindMentorBtn')}
                 <ArrowRight className="w-5 h-5 ml-1" />
               </Button>
             </Link>
             <Link to="/predmeti">
               <Button variant="heroOutline" size="lg">
-                Истражи предмети
+                {t('howExploreSubjectsBtn')}
               </Button>
             </Link>
           </div>
@@ -97,10 +130,10 @@ export function HowItWorksPage() {
       <section className="py-20 container mx-auto px-4 sm:px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-            Четири чекори до твојот прв час
+            {t('howStepsTitle')}
           </h2>
           <p className="text-muted-foreground text-lg">
-            Сè е дизајнирано да биде брзо, интуитивно и целосно прилагодено на твоето темпо.
+            {t('howStepsSubtitle')}
           </p>
         </div>
 
@@ -146,24 +179,24 @@ export function HowItWorksPage() {
           <div className="text-center max-w-2xl mx-auto mb-14">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-green/15 text-green text-xs font-semibold mb-3 border border-green/30">
               <HeartHandshake className="w-4 h-4" />
-              <span>Зошто врсничко менторство?</span>
+              <span>{t('howAdvantageBadge')}</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-              PeerUp vs Традиционални приватни часови
+              {t('howAdvantageTitle')}
             </h2>
             <p className="text-muted-foreground text-sm md:text-base">
-              Зошто младите ментори постигнуваат подобри резултати кај учениците:
+              {t('howAdvantageSubtitle')}
             </p>
           </div>
 
           <div className="bg-card rounded-3xl border border-border overflow-hidden shadow-card">
             <div className="grid grid-cols-1 md:grid-cols-3 bg-muted p-4 md:p-6 text-sm font-bold text-dark border-b border-border">
-              <div className="hidden md:block">Карактеристика</div>
+              <div className="hidden md:block">{t('howColFeature')}</div>
               <div className="text-primary flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-accent" />
-                <span>PeerUp Академија</span>
+                <span>{t('howColPeerUp')}</span>
               </div>
-              <div className="text-muted-foreground hidden md:block">Традиционални часови</div>
+              <div className="text-muted-foreground hidden md:block">{t('howColTraditional')}</div>
             </div>
 
             <div className="divide-y divide-border">
@@ -178,7 +211,7 @@ export function HowItWorksPage() {
                     </span>
                   </div>
                   <div className="text-muted-foreground p-3 md:p-0 bg-muted/40 md:bg-transparent rounded-xl md:rounded-none">
-                    <span className="md:hidden text-xs font-bold text-muted-foreground block mb-1">Традиционално:</span>
+                    <span className="md:hidden text-xs font-bold text-muted-foreground block mb-1">{isMk ? 'Традиционално:' : 'Traditional:'}</span>
                     {c.traditional}
                   </div>
                 </div>
@@ -195,20 +228,20 @@ export function HowItWorksPage() {
             <ShieldCheck className="w-9 h-9" />
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
-            100% Гаранција за задоволство и безбедност
+            {t('howGuaranteeTitle')}
           </h2>
           <p className="text-muted-foreground text-base max-w-2xl mx-auto mb-8 leading-relaxed">
-            Сите ментори се внимателно селектирани врз основа на вистински натпреварувачки успеси и академски достигнувања. Доколку не си задоволен од твојот прв час, ти нудиме бесплатен час со друг ментор или целосно рефундирање.
+            {t('howGuaranteeDesc')}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/mentori">
               <Button variant="default" size="lg">
-                Избери ментор
+                {t('howChooseMentorBtn')}
               </Button>
             </Link>
             <Link to="/ceni">
               <Button variant="outline" size="lg">
-                Погледни цени
+                {t('howViewPricingBtn')}
               </Button>
             </Link>
           </div>

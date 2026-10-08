@@ -3,18 +3,22 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
-
-const navLinks = [
-  { to: '/kako-raboti', label: 'Како работи' },
-  { to: '/predmeti',    label: 'Предмети' },
-  { to: '/ceni',        label: 'Цени' },
-  { to: '/mentori',     label: 'Ментори' },
-]
+import LanguageToggle from '../LanguageToggle'
+import ThemeToggle from '../Themetoggle'
+import { useLanguage } from '../../context/LanguageContext'
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const { t } = useLanguage()
+
+  const navLinks = [
+    { to: '/kako-raboti', labelKey: 'navHowItWorks' },
+    { to: '/predmeti',    labelKey: 'navSubjects' },
+    { to: '/ceni',        labelKey: 'navPricing' },
+    { to: '/mentori',     labelKey: 'navMentors' },
+  ]
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,16 +42,16 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo with peerup izolirano logo.svg */}
+          {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
-            aria-label="PeerUp - Почетна"
+            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+            aria-label="PeerUp"
           >
             <img
               src="/logo.svg"
               alt="PeerUp Logo"
-              className="h-10 w-auto object-contain"
+              className="h-20 w-auto object-contain"
             />
           </Link>
 
@@ -66,16 +70,22 @@ export function Navbar() {
                   )
                 }
               >
-                {link.label}
+                {t(link.labelKey)}
               </NavLink>
             ))}
           </div>
 
-          {/* Right Header Area (NO "Become a mentor" button) */}
+          {/* Right Header Area */}
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
+            <LanguageToggle />
             <Link to="/auth">
-              <Button variant="ghost" size="sm" className="font-semibold text-muted-foreground hover:text-foreground">
-                Најави се
+              <Button
+                variant="ghost"
+                size="sm"
+                className="font-semibold text-muted-foreground hover:text-foreground border border-border rounded-full px-5"
+              >
+                {t('navSignIn')}
               </Button>
             </Link>
           </div>
@@ -85,7 +95,7 @@ export function Navbar() {
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="p-2 text-foreground hover:text-primary rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              aria-label="Отвори мени"
+              aria-label={t('openMenu')}
               aria-expanded={mobileOpen}
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -111,14 +121,18 @@ export function Navbar() {
                   )
                 }
               >
-                {link.label}
+                {t(link.labelKey)}
               </NavLink>
             ))}
 
-            <div className="border-t border-border pt-3 mt-1 flex flex-col gap-2">
+            <div className="border-t border-border pt-3 mt-1 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <ThemeToggle />
+                <LanguageToggle />
+              </div>
               <Link to="/auth" className="w-full">
-                <Button variant="ghost" className="w-full justify-center">
-                  Најави се
+                <Button variant="ghost" className="w-full justify-center border border-border rounded-full">
+                  {t('navSignIn')}
                 </Button>
               </Link>
             </div>

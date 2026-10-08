@@ -1,98 +1,150 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Check, Sparkles, ShieldCheck } from 'lucide-react'
 import { Button } from '../components/ui/Button'
+import { useLanguage } from '../context/LanguageContext'
 
 export function PricingPage() {
-  const plans = [
+  const { t, language } = useLanguage()
+  const isMk = language !== 'en'
+
+  const plans = useMemo(() => [
     {
-      name: 'Еден час',
-      description: 'За повремена помош пред тест или контролна',
+      name: isMk ? 'Еден час' : 'Single Session',
+      description: isMk
+        ? 'За повремена помош пред тест или контролна'
+        : 'For occasional help before an exam or quiz',
       price: '€10',
-      period: '/час',
+      period: isMk ? '/час' : '/hour',
       discount: null,
       popular: false,
-      features: [
-        'Избери било кој верификуван ментор',
-        '60 минути интензивна 1-на-1 сесија',
-        'Онлајн преку Zoom или Google Meet',
-        'Флексибилно закажување според твој термин',
-        'Заедничка дигитална табла',
-      ],
-      ctaText: 'Закажи час',
+      features: isMk
+        ? [
+            'Избери било кој верификуван ментор',
+            '60 минути интензивна 1-на-1 сесија',
+            'Онлајн преку Google Meet',
+            'Флексибилно закажување според твој термин',
+            'Заедничка дигитална табла',
+          ]
+        : [
+            'Choose any verified mentor',
+            '60-minute intensive 1-on-1 session',
+            'Online via Google Meet',
+            'Flexible scheduling to fit your calendar',
+            'Shared interactive whiteboard',
+          ],
+      ctaText: isMk ? 'Закажи час' : 'Book a session',
       ctaLink: '/mentori',
       btnVariant: 'outline',
     },
     {
-      name: 'Месечен пакет',
-      description: 'Најпопуларен избор за редовно учење и вежбање',
+      name: isMk ? 'Месечен пакет' : 'Monthly Package',
+      description: isMk
+        ? 'Најпопуларен избор за редовно учење и вежбање'
+        : 'Most popular choice for regular study and practice',
       price: '€72',
-      period: '/8 часа',
-      discount: '10% заштеда (€9/час)',
+      period: isMk ? '/8 часа' : '/8 sessions',
+      discount: isMk ? '10% заштеда (€9/час)' : '10% savings (€9/hr)',
       popular: true,
-      features: [
-        '8 часа месечно со твојот ментор',
-        'Постојан редовен ментор',
-        'Приоритетно закажување термини',
-        'Следење на неделен напредок',
-        'Бесплатни материјали и задачи за вежбање',
-        'Директна комуникација со менторот',
-      ],
-      ctaText: 'Избери пакет',
+      features: isMk
+        ? [
+            '8 часа месечно со Вашиот ментор',
+            'Постојан редовен ментор',
+            'Приоритетно закажување термини',
+            'Следење на неделен напредок',
+            'Бесплатни материјали и задачи за вежбање',
+            'Директна комуникација со менторот',
+          ]
+        : [
+            '8 hours per month with your mentor',
+            'Dedicated regular mentor',
+            'Priority slot booking',
+            'Weekly progress tracking',
+            'Free study materials & practice exercises',
+            'Direct communication with mentor',
+          ],
+      ctaText: isMk ? 'Избери пакет' : 'Choose package',
       ctaLink: '/mentori',
       btnVariant: 'default',
     },
     {
-      name: 'Стандард претплата',
-      description: 'За долгорочна подготовка и континуитет',
+      name: isMk ? 'Стандард претплата' : 'Standard Membership',
+      description: isMk
+        ? 'За долгорочна подготовка и континуитет'
+        : 'For long-term preparation and continuous progress',
       price: '€10',
-      period: '/месечно + €7.50/час',
-      discount: '25% попуст на час',
+      period: isMk ? '/месечно + €7.50/час' : '/month + €7.50/hr',
+      discount: isMk ? '25% попуст на час' : '25% hourly discount',
       popular: false,
-      features: [
-        'Членска претплата со 25% попуст',
-        'Секој час по повластена цена од €7.50',
-        'Пристап до архива на материјали',
-        'Месечни групни сесии за прашања',
-        'Приоритетна е-пошта поддршка',
-      ],
-      ctaText: 'Започни стандард',
+      features: isMk
+        ? [
+            'Членска претплата со 25% попуст',
+            'Секој час по повластена цена од €7.50',
+            'Пристап до архива на материјали',
+            'Месечни групни сесии за прашања',
+            'Приоритетна е-пошта поддршка',
+          ]
+        : [
+            'Membership with 25% discount',
+            'Every lesson at preferred rate of €7.50',
+            'Access to study materials library',
+            'Monthly group Q&A sessions',
+            'Priority email support',
+          ],
+      ctaText: isMk ? 'Започни стандард' : 'Start standard',
       ctaLink: '/mentori',
       btnVariant: 'outline',
     },
     {
-      name: 'Премиум подготовка',
-      description: 'За интензивна подготовка за олимпијади и матура',
+      name: isMk ? 'Премиум подготовка' : 'Premium Prep',
+      description: isMk
+        ? 'За интензивна подготовка за олимпијади и матура'
+        : 'For intensive olympiad & matriculation preparation',
       price: '€25',
-      period: '/месечно + €6/час',
-      discount: '40% попуст на час',
+      period: isMk ? '/месечно + €6/час' : '/month + €6/hr',
+      discount: isMk ? '40% попуст на час' : '40% hourly discount',
       popular: false,
-      features: [
-        'Максимален попуст од 40% (€6/час)',
-        'Избор од топ 5% најуспешни ментори',
-        'Неограничен пристап до сите материјали',
-        'Персонализиран 1-на-1 менторски план',
-        '24/7 директна менторска поддршка',
-      ],
-      ctaText: 'Започни премиум',
+      features: isMk
+        ? [
+            'Максимален попуст од 40% (€6/час)',
+            'Избор од топ 5% најуспешни ментори',
+            'Неограничен пристап до сите материјали',
+            'Персонализиран 1-на-1 менторски план',
+            '24/7 директна менторска поддршка',
+          ]
+        : [
+            'Maximum discount of 40% (€6/hr)',
+            'Choice of top 5% highest-ranked mentors',
+            'Unlimited access to all materials',
+            'Personalized 1-on-1 mentorship plan',
+            '24/7 direct mentor support',
+          ],
+      ctaText: isMk ? 'Започни премиум' : 'Start premium',
       ctaLink: '/mentori',
       btnVariant: 'outline',
     },
-  ]
+  ], [isMk])
 
-  const pricingFaqs = [
+  const pricingFaqs = useMemo(() => [
     {
-      q: 'Како се врши плаќањето?',
-      a: 'Плаќањето се врши безбедно онлајн по потврдувањето на часот или при избор на месечен пакет. Податоците се заштитени со највисоко ниво на безбедност.',
+      q: isMk ? 'Како се врши плаќањето?' : 'How does payment work?',
+      a: isMk
+        ? 'Плаќањето се врши безбедно онлајн по потврдувањето на часот или при избор на месечен пакет. Податоците се заштитени со највисоко ниво на безбедност.'
+        : 'Payment is processed securely online upon confirming the session or choosing a monthly package. Your payment details are encrypted and fully protected.',
     },
     {
-      q: 'Што доколку менторот не ми одговара?',
-      a: 'Твоето задоволство е наш главен приоритет. Доколку по првиот час не си задоволен/а, веднаш ти овозможуваме бесплатен час со друг ментор или 100% рефундирање.',
+      q: isMk ? 'Што доколку менторот не ми одговара?' : 'What if the mentor is not the right fit?',
+      a: isMk
+        ? 'Твоето задоволство е наш главен приоритет. Доколку по првиот час не си задоволен/а, веднаш ти овозможуваме бесплатен час со друг ментор или 100% рефундирање.'
+        : 'Your satisfaction is our top priority. If you are not satisfied after your first session, we immediately offer a free session with another mentor or a 100% refund.',
     },
     {
-      q: 'Дали можам да го откажам пакетот?',
-      a: 'Да, пакетите немаат договорна обврска и може да се откажат во било кое време пред следниот месечен циклус.',
+      q: isMk ? 'Дали можам да го откажам пакетот?' : 'Can I cancel my package or membership?',
+      a: isMk
+        ? 'Да, пакетите немаат договорна обврска и може да се откажат во било кое време пред следниот месечен циклус.'
+        : 'Yes, packages have no contractual lock-in and can be cancelled at any time before the next billing cycle.',
     },
-  ]
+  ], [isMk])
 
   return (
     <div className="min-h-screen pt-24 pb-20">
@@ -101,14 +153,14 @@ export function PricingPage() {
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-semibold mb-6 border border-primary/20">
             <Sparkles className="w-4 h-4 text-accent" />
-            <span>Транспарентен ценовник</span>
+            <span>{t('pricingBadge')}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-dark mb-6 leading-tight max-w-4xl mx-auto">
-            Инвестиција во твоето знаење{' '}
-            <span className="text-gradient">без скриени трошоци</span>
+            {t('pricingTitle')}{' '}
+            <span className="text-gradient">{t('pricingTitleHighlight')}</span>
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
-            Избери поединечен час или заштеди со пакет. Сите опции се со загарантиран квалитет и поддршка.
+            {t('pricingSubtitle')}
           </p>
         </div>
       </section>
@@ -127,7 +179,7 @@ export function PricingPage() {
             >
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 gradient-primary text-white text-xs font-bold px-4 py-1 rounded-full shadow-sm">
-                  Најпопуларен избор
+                  {t('pricingPopular')}
                 </div>
               )}
 
@@ -190,15 +242,15 @@ export function PricingPage() {
           </div>
           <div className="flex-1">
             <h3 className="text-xl font-bold text-dark mb-1">
-              100% Гаранција за враќање на средствата
+              {t('pricingGuaranteeTitle')}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Ако не си 100% задоволен/а од искуството со менторот на твојот прв час, веднаш ќе ти доделиме друг ментор бесплатно или ќе ти ги рефундираме уплатените средства без дополнителни прашања.
+              {t('pricingGuaranteeDesc')}
             </p>
           </div>
           <Link to="/mentori" className="shrink-0">
             <Button variant="default">
-              Најди ментор
+              {t('pricingGuaranteeBtn')}
             </Button>
           </Link>
         </div>
@@ -208,10 +260,10 @@ export function PricingPage() {
       <section className="py-16 container mx-auto px-4 sm:px-6 max-w-3xl">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-dark mb-3">
-            Често поставувани прашања за цените
+            {t('pricingFaqTitle')}
           </h2>
           <p className="text-muted-foreground text-sm">
-            Сè што сакаш да знаеш за плаќањата и пакетите
+            {t('pricingFaqSubtitle')}
           </p>
         </div>
 

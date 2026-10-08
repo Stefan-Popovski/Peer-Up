@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ['class', '[data-theme="dark"]'],
   content: [
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
@@ -7,10 +8,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        // STRICT 4-COLOR PALETTE: #096882, #00d9d0, #309952, #071b3a
+        // Colors use rgb() wrapper + CSS variable channels so opacity modifiers (bg-primary/20 etc.) work
         primary: {
-          DEFAULT: '#096882',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+          foreground: 'rgb(var(--primary-foreground) / <alpha-value>)',
           50:  '#edf7fa',
           100: '#d5edf2',
           200: '#aedce6',
@@ -23,8 +24,8 @@ export default {
           900: '#042b37',
         },
         accent: {
-          DEFAULT: '#00d9d0',
-          foreground: '#071b3a',
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
+          foreground: 'rgb(var(--accent-foreground) / <alpha-value>)',
           50:  '#e6fbfb',
           100: '#c2f7f5',
           200: '#8df0ec',
@@ -37,8 +38,8 @@ export default {
           900: '#005552',
         },
         green: {
-          DEFAULT: '#309952',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--green) / <alpha-value>)',
+          foreground: 'rgb(var(--green-foreground) / <alpha-value>)',
           50:  '#edf7f0',
           100: '#d4edd9',
           200: '#aedebb',
@@ -51,8 +52,8 @@ export default {
           900: '#174426',
         },
         dark: {
-          DEFAULT: '#071b3a',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--dark) / <alpha-value>)',
+          foreground: 'rgb(var(--dark-foreground) / <alpha-value>)',
           50:  '#edf2f7',
           100: '#d4dfec',
           200: '#adc3dc',
@@ -64,26 +65,32 @@ export default {
           800: '#040d1c',
           900: '#030913',
         },
+        paper: 'rgb(var(--background) / <alpha-value>)',
+        paperDim: 'rgb(var(--card) / <alpha-value>)',
+        ink: 'rgb(var(--foreground) / <alpha-value>)',
+        inkSoft: 'rgb(var(--muted-foreground) / <alpha-value>)',
+        line: 'rgb(var(--border) / <alpha-value>)',
         secondary: {
-          DEFAULT: '#309952',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--secondary) / <alpha-value>)',
+          foreground: 'rgb(var(--secondary-foreground) / <alpha-value>)',
         },
-        background: '#f7fafb',
-        foreground: '#071b3a',
+        background: 'rgb(var(--background) / <alpha-value>)',
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
         card: {
-          DEFAULT: '#ffffff',
-          foreground: '#071b3a',
+          DEFAULT: 'rgb(var(--card) / <alpha-value>)',
+          foreground: 'rgb(var(--card-foreground) / <alpha-value>)',
         },
         muted: {
-          DEFAULT: '#edf4f7',
-          foreground: '#516a7f',
+          DEFAULT: 'rgb(var(--muted) / <alpha-value>)',
+          foreground: 'rgb(var(--muted-foreground) / <alpha-value>)',
         },
-        border: '#d4e3e8',
-        input: '#d4e3e8',
-        ring: '#00d9d0',
+        border: 'rgb(var(--border) / <alpha-value>)',
+        input: 'rgb(var(--input) / <alpha-value>)',
+        ring: 'rgb(var(--ring) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         xl: '1rem',
@@ -91,9 +98,9 @@ export default {
         '3xl': '1.75rem',
       },
       boxShadow: {
-        soft: '0 4px 20px -4px rgba(9, 104, 130, 0.12)',
-        card: '0 10px 40px -10px rgba(7, 27, 58, 0.08)',
-        hover: '0 20px 45px -12px rgba(9, 104, 130, 0.22)',
+        soft: 'var(--shadow-soft)',
+        card: 'var(--shadow-card)',
+        hover: 'var(--shadow-hover)',
       },
       keyframes: {
         'fade-in-up': {

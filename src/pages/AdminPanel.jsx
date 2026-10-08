@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
-import { supabase } from '../lib/Supabaseclient'
+import { supabase } from '../lib/supabase'
 import Brand from '../components/Brand.jsx'
-import ThemeToggle from '../components/Themetoggle.jsx'
-import LanguageToggle from '../components/Languagetoggle.jsx'
+import ThemeToggle from '../components/ThemeToggle.jsx'
+import LanguageToggle from '../components/LanguageToggle.jsx'
 
 export default function AdminPanel() {
   const { signOut } = useAuth()

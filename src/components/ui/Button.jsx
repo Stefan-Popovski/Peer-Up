@@ -18,19 +18,19 @@ const variantClasses = {
   hero:
     'gradient-primary text-white shadow-soft hover:shadow-hover hover:-translate-y-1 hover:scale-[1.02] active:translate-y-0',
   heroOutline:
-    'border-2 border-primary/25 bg-card text-dark hover:border-primary hover:bg-primary/5 active:bg-primary/10',
+    'border-2 border-primary/30 bg-card text-foreground hover:border-primary hover:bg-primary/10 active:bg-primary/15',
   secondary:
     'bg-green text-white hover:bg-green-600 shadow-soft hover:shadow-hover hover:-translate-y-0.5',
   outline:
     'border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-white',
   accent:
-    'bg-accent text-dark hover:bg-accent-600 font-semibold shadow-soft hover:shadow-hover',
+    'bg-accent text-[#071b3a] hover:bg-accent-600 font-semibold shadow-soft hover:shadow-hover',
   ghost:
-    'hover:bg-muted text-dark hover:text-primary',
+    'hover:bg-muted text-foreground hover:text-primary',
   link:
     'text-primary underline-offset-4 hover:underline p-0 h-auto',
   destructive:
-    'bg-dark text-white hover:bg-dark-600',
+    'bg-[#071b3a] dark:bg-slate-800 text-white hover:bg-[#06162f] dark:hover:bg-slate-700',
 }
 
 export const Button = forwardRef(function Button(

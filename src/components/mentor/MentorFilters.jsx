@@ -2,7 +2,6 @@ import { Filter, RotateCcw } from 'lucide-react'
 import { SUBJECTS } from '../../data/subjects'
 import { SCHOOL_LEVEL_LABELS } from '../../types/index'
 import { DEFAULT_FILTERS } from '../../hooks/useMentors'
-import { MK } from '../../i18n/mk'
 import { Select } from '../ui'
 import { cn } from '../../lib/utils'
 
@@ -26,10 +25,10 @@ export function MentorFiltersPanel({ filters, onChange, languages, className }) 
 
   return (
     <aside aria-label="Филтри за ментори"
-      className={cn('rounded-2xl bg-white p-5 shadow-card', className)}
+      className={cn('rounded-2xl bg-card border border-border p-5 shadow-card', className)}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="flex items-center gap-2 font-semibold text-dark">
+        <h2 className="flex items-center gap-2 font-semibold text-foreground">
           <Filter className="h-4 w-4 text-primary" aria-hidden="true" />
           {MK.filters.title}
         </h2>

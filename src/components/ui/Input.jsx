@@ -13,7 +13,7 @@ export const Input = forwardRef(function Input(
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-xs font-semibold text-dark">
+        <label htmlFor={id} className="text-xs font-semibold text-foreground">
           {label}
           {required && <span className="ml-1 text-primary" aria-hidden="true">*</span>}
         </label>
@@ -28,7 +28,7 @@ export const Input = forwardRef(function Input(
         aria-invalid={!!error}
         aria-describedby={[error && errorId, hint && hintId].filter(Boolean).join(' ') || undefined}
         className={cn(
-          'w-full rounded-xl border px-4 py-2.5 text-sm text-dark transition-all outline-none',
+          'w-full rounded-xl border px-4 py-2.5 text-sm text-foreground transition-all outline-none',
           'focus:ring-2 focus:ring-accent/30 focus:border-accent',
           'placeholder:text-muted-foreground',
           error

@@ -1,16 +1,23 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ChevronDown, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { FAQ_CATEGORIES } from '../data/faq'
+import { getFaqCategories } from '../data/faq'
 import { Button } from '../components/ui/Button'
+import { useLanguage } from '../context/LanguageContext'
 
 export function FaqPage() {
   const [openMap, setOpenMap] = useState({})
+  const { t, language } = useLanguage()
+  const isMk = language !== 'en'
+
+  const faqCategories = useMemo(() => getFaqCategories(isMk), [isMk])
 
   const toggle = (catId, idx) => {
     const key = `${catId}-${idx}`
     setOpenMap((prev) => ({ ...prev, [key]: !prev[key] }))
   }
+
+  const CLICK_HERE_MARKER = isMk ? '(кликни тука)' : '(click here)'
 
   return (
     <div className="min-h-screen pt-24 pb-20">
@@ -19,20 +26,20 @@ export function FaqPage() {
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-semibold mb-6 border border-primary/20">
             <Sparkles className="w-4 h-4 text-accent" />
-            <span>Помош и поддршка</span>
+            <span>{t('faqBadge')}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-dark mb-4 leading-tight max-w-3xl mx-auto">
-            Често поставувани <span className="text-gradient">прашања</span>
+            {t('faqTitle')} <span className="text-gradient">{t('faqTitleHighlight')}</span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-            Сè што треба да знаеш за PeerUp платформата, менторите, часовите и безбедноста.
+            {t('faqSubtitle')}
           </p>
         </div>
       </section>
 
       {/* Categories */}
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-4xl space-y-10">
-        {FAQ_CATEGORIES.map((cat) => (
+        {faqCategories.map((cat) => (
           <div key={cat.id} className="bg-card rounded-3xl p-6 sm:p-8 border border-border shadow-soft">
             <h2 className="text-xl font-bold text-dark mb-6 pb-3 border-b border-border">
               {cat.title}
@@ -59,7 +66,17 @@ export function FaqPage() {
                     </button>
                     {isOpen && (
                       <div className="px-5 pb-5 pt-1 text-sm text-dark/80 leading-relaxed border-t border-border bg-muted/40 animate-fade-in-up">
-                        {item.answer}
+                        {typeof item.answer === 'string' && item.answer.includes(CLICK_HERE_MARKER) ? (
+                          <>
+                            {item.answer.split(CLICK_HERE_MARKER)[0]}(
+                            <Link to="/stani-mentor" className="text-primary font-semibold underline hover:text-primary/80">
+                              {isMk ? 'кликни тука' : 'click here'}
+                            </Link>
+                            ){item.answer.split(CLICK_HERE_MARKER)[1]}
+                          </>
+                        ) : (
+                          item.answer
+                        )}
                       </div>
                     )}
                   </div>
@@ -71,13 +88,13 @@ export function FaqPage() {
 
         {/* Contact banner */}
         <div className="rounded-3xl bg-primary/10 border border-primary/20 p-8 text-center max-w-2xl mx-auto shadow-sm">
-          <h3 className="text-lg font-bold text-dark mb-2">Не го најде твојот одговор?</h3>
+          <h3 className="text-lg font-bold text-dark mb-2">{t('faqNotFound')}</h3>
           <p className="text-sm text-muted-foreground mb-5">
-            Нашиот тим е тука за тебе. Пиши ни и ќе ти одговориме наскоро!
+            {t('faqNotFoundDesc')}
           </p>
           <Link to="/contact">
             <Button variant="default">
-              Контактирај нè
+              {t('faqContactUs')}
             </Button>
           </Link>
         </div>

@@ -40,7 +40,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-4" role="presentation">
-      <div className="absolute inset-0 bg-dark/60 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-[#071b3a]/70 dark:bg-slate-950/80 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
       <div
         ref={dialogRef}
         role="dialog"
@@ -49,22 +49,22 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
         tabIndex={-1}
         onKeyDown={handleKeyDown}
         className={cn(
-          'relative z-10 w-full rounded-2xl bg-white shadow-xl focus:outline-none',
+          'relative z-10 w-full rounded-2xl bg-card border border-border shadow-card focus:outline-none',
           sizeClasses[size],
           className
         )}
       >
-        <div className="flex items-center justify-between border-b border-dark/10 px-6 py-4">
-          <h2 id="modal-title" className="text-lg font-semibold text-dark">{title}</h2>
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+          <h2 id="modal-title" className="text-lg font-semibold text-foreground">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Затвори"
-            className="rounded-lg p-1.5 text-dark/40 transition-colors hover:bg-dark/5 hover:text-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+        <div className="px-6 py-5 text-foreground">{children}</div>
       </div>
     </div>
   )

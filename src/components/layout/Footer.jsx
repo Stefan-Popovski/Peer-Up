@@ -1,57 +1,60 @@
 import { Link } from 'react-router-dom'
 import { MapPin, Mail, ArrowUp } from 'lucide-react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export function Footer() {
+  const { t } = useLanguage()
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <footer className="bg-dark text-white/90 py-16 border-t border-dark/20">
+    <footer className="bg-[#071b3a] text-white/90 py-16 border-t border-white/10">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand Col */}
-          <div className="space-y-4">
-            <Link to="/" className="inline-block" aria-label="PeerUp">
+          <div>
+            <Link to="/" className="inline-block -mt-5 -ml-1" aria-label="PeerUp">
               <img
                 src="/logo.svg"
                 alt="PeerUp Logo"
-                className="h-10 w-auto brightness-0 invert"
+                className="h-20 w-auto brightness-0 invert"
               />
             </Link>
             <p className="text-sm text-white/70 leading-relaxed max-w-sm">
-              Првата peer-to-peer tutoring платформа во Македонија. Поврзуваме ученици со млади ментори за квалитетно, пријателско и достапно учење.
+              {t('footerTagline')}
             </p>
-            <div className="flex items-center gap-2 text-xs text-white/60 pt-2">
+            <div className="flex items-center gap-2 text-xs text-white/60 pt-4">
               <MapPin className="w-4 h-4 text-accent" />
-              <span>Скопје, Македонија</span>
+              <span>{t('footerCity')}</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
-              Истражи
+              {t('footerExplore')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link to="/kako-raboti" className="text-white/70 hover:text-accent transition-colors">
-                  Како функционира
+                  {t('footerHowItWorks')}
                 </Link>
               </li>
               <li>
                 <Link to="/predmeti" className="text-white/70 hover:text-accent transition-colors">
-                  Предмети и области
+                  {t('footerSubjects')}
                 </Link>
               </li>
               <li>
                 <Link to="/ceni" className="text-white/70 hover:text-accent transition-colors">
-                  Цени и пакети
+                  {t('footerPricing')}
                 </Link>
               </li>
               <li>
                 <Link to="/mentori" className="text-white/70 hover:text-accent transition-colors">
-                  Верифицирани ментори
+                  {t('footerMentors')}
                 </Link>
               </li>
             </ul>
@@ -60,22 +63,22 @@ export function Footer() {
           {/* For Mentors */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
-              За ментори
+              {t('footerForMentors')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link to="/stani-mentor" className="text-white/70 hover:text-accent transition-colors">
-                  Стани ментор
+                  {t('footerBecomeMentor')}
                 </Link>
               </li>
               <li>
                 <Link to="/stani-mentor" className="text-white/70 hover:text-accent transition-colors">
-                  Заработка и бенефити
+                  {t('footerEarnings')}
                 </Link>
               </li>
               <li>
                 <Link to="/faq" className="text-white/70 hover:text-accent transition-colors">
-                  Често поставувани прашања
+                  {t('footerFaq')}
                 </Link>
               </li>
             </ul>
@@ -84,17 +87,17 @@ export function Footer() {
           {/* Support / Contact */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
-              Поддршка
+              {t('footerSupport')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link to="/faq" className="text-white/70 hover:text-accent transition-colors">
-                  FAQ центар
+                  {t('footerFaqCenter')}
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-white/70 hover:text-accent transition-colors">
-                  Контактирај нè
+                  {t('footerContact')}
                 </Link>
               </li>
               <li className="pt-2">
@@ -103,7 +106,7 @@ export function Footer() {
                   className="inline-flex items-center gap-2 text-sm text-accent hover:underline"
                 >
                   <Mail className="w-4 h-4 text-accent" />
-                  contact@peerup.mk
+                  info@peerup.mk
                 </a>
               </li>
             </ul>
@@ -112,19 +115,19 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
-          <p>© {new Date().getFullYear()} PeerUp. Сите права задржани.</p>
+          <p>© {new Date().getFullYear()} PeerUp. {t('footerRights')}</p>
           <div className="flex items-center gap-6">
             <Link to="/terms" className="hover:text-accent transition-colors">
-              Услови за користење
+              {t('footerTerms')}
             </Link>
             <Link to="/privacy" className="hover:text-accent transition-colors">
-              Политика за приватност
+              {t('footerPrivacy')}
             </Link>
             <button
               onClick={scrollToTop}
               className="inline-flex items-center gap-1 hover:text-accent transition-colors cursor-pointer"
             >
-              На врв <ArrowUp className="w-3.5 h-3.5" />
+              {t('footerBackToTop')} <ArrowUp className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>

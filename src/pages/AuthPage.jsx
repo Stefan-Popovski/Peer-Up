@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
-import { supabase } from '../lib/Supabaseclient'
-import ThemeToggle from '../components/Themetoggle.jsx'
-import LanguageToggle from '../components/Languagetoggle.jsx'
+import { supabase } from '../lib/supabase'
+import ThemeToggle from '../components/ThemeToggle.jsx'
+import LanguageToggle from '../components/LanguageToggle.jsx'
 
 export default function AuthPage() {
   const [mode, setMode] = useState('signin') // 'signin' | 'signup'
@@ -49,7 +49,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-5">
-      <div className="max-w-sm w-full rounded border border-line bg-paperDim p-6">
+      <div className="max-w-sm w-full rounded-2xl border border-line bg-paperDim p-6 shadow-card">
         <div className="flex items-center justify-between">
           <Link to="/" className="text-xs text-inkSoft hover:text-ink">
             {t('back')}
@@ -59,7 +59,7 @@ export default function AuthPage() {
             <LanguageToggle />
           </div>
         </div>
-        <h1 className="font-display font-semibold tracking-tight text-2xl mt-3">
+        <h1 className="font-display font-semibold tracking-tight text-2xl mt-3 text-ink">
           {mode === 'signup' ? t('createAccount') : t('welcomeBack')}
         </h1>
 
@@ -75,7 +75,7 @@ export default function AuthPage() {
               onChange={(e) => setFullName(e.target.value)}
               placeholder={t('fullName')}
               required
-              className="rounded px-3 py-2 text-sm w-full"
+              className="rounded-xl border border-line bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-inkSoft outline-none focus:border-accent focus:ring-1 focus:ring-accent w-full transition-all"
             />
           )}
           <input
@@ -84,7 +84,7 @@ export default function AuthPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('email')}
             required
-            className="rounded px-3 py-2 text-sm w-full"
+            className="rounded-xl border border-line bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-inkSoft outline-none focus:border-accent focus:ring-1 focus:ring-accent w-full transition-all"
           />
           <input
             type="password"
@@ -93,13 +93,13 @@ export default function AuthPage() {
             placeholder={t('password')}
             required
             minLength={6}
-            className="rounded px-3 py-2 text-sm w-full"
+            className="rounded-xl border border-line bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-inkSoft outline-none focus:border-accent focus:ring-1 focus:ring-accent w-full transition-all"
           />
           <button
             type="submit"
             disabled={busy}
-            className="rounded px-5 py-2.5 text-sm font-medium w-full disabled:opacity-60"
-            style={{ background: 'var(--gradient)', color: '#04252b' }}
+            className="rounded-xl px-5 py-2.5 text-sm font-semibold w-full disabled:opacity-60 cursor-pointer shadow-soft hover:shadow-hover transition-all"
+            style={{ background: 'var(--gradient)', color: '#071b3a' }}
           >
             {busy ? t('pleaseWait') : mode === 'signup' ? t('signUp') : t('signIn')}
           </button>
@@ -113,7 +113,7 @@ export default function AuthPage() {
 
         <p className="text-xs text-inkSoft mt-4">
           {t('wantTeachInstead')}{' '}
-          <Link to="/mentor-application" style={{ color: 'var(--teal-mid)' }}>
+          <Link to="/stani-mentor" style={{ color: 'var(--teal-mid)' }}>
             {t('applyMentor')}
           </Link>
         </p>

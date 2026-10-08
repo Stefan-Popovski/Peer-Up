@@ -25,20 +25,20 @@ export function ReportPage() {
   return (
     <div className="min-h-screen bg-background pt-16">
       {/* Dark Navy Header */}
-      <div className="bg-dark py-14">
+      <div className="bg-[#071b3a] dark:bg-slate-900 py-14 border-b border-border">
         <div className="container-base text-center">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/20 text-accent mb-4 border border-accent/30">
             <ShieldAlert className="h-7 w-7" aria-hidden="true" />
           </div>
           <h1 className="text-3xl font-extrabold text-white md:text-4xl">Пријави проблем</h1>
-          <p className="mt-4 text-white/70 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+          <p className="mt-4 text-slate-300 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
             Сите пријави ги сфаќаме сериозно. Вашата пријава е строго доверлива и ќе биде итно разгледана од нашиот тим за безбедност.
           </p>
         </div>
       </div>
 
       <div className="container-base py-12 max-w-2xl">
-        <Link to="/contact" className="inline-flex items-center gap-2 text-sm text-dark/70 hover:text-dark mb-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
+        <Link to="/contact" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
           <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Назад кон Контакт
         </Link>
 
@@ -46,7 +46,7 @@ export function ReportPage() {
           {submitted ? (
             <div className="flex flex-col items-center text-center py-8">
               <CheckCircle className="h-16 w-16 text-green mb-4" aria-hidden="true" />
-              <h2 className="text-2xl font-bold text-dark mb-2">Пријавата е успешно испратена</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Пријавата е успешно испратена</h2>
               <p className="text-muted-foreground leading-relaxed mb-8 max-w-md text-sm">
                 Ви благодариме што ни помогнавте да ја одржиме платформата безбедна. Нашиот тим ќе ве контактира наскоро доколку се потребни дополнителни информации.
               </p>
@@ -85,7 +85,7 @@ export function ReportPage() {
                 placeholder="Избери категорија..."
               />
               <div className="flex flex-col gap-1">
-                <label htmlFor="description" className="text-sm font-semibold text-dark">
+                <label htmlFor="description" className="text-sm font-semibold text-foreground">
                   Детален опис <span className="text-primary" aria-hidden="true">*</span>
                 </label>
                 <textarea
@@ -93,7 +93,7 @@ export function ReportPage() {
                   required
                   rows={5}
                   placeholder="Опишете што точно се случи..."
-                  className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-none placeholder:text-muted-foreground"
+                  className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-none placeholder:text-muted-foreground"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 />

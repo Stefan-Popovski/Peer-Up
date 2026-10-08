@@ -1,6 +1,5 @@
 import { MentorCard } from './MentorCard'
 import { SkeletonCard, Button } from '../ui'
-import { MK } from '../../i18n/mk'
 
 export function MentorGrid({ mentors, loading = false, onBook, onClearFilters }) {
   if (loading) {

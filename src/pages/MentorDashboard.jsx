@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
-import { supabase } from '../lib/Supabaseclient'
+import { supabase } from '../lib/supabase'
 import DashboardHeader from '../components/DashboardHeader.jsx'
 import MonthCalendar from '../components/Monthcalendar.jsx'
 

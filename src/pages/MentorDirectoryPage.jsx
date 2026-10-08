@@ -1,40 +1,18 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, Clock, Sparkles, X } from 'lucide-react'
-import { ALL_MENTORS } from '../data/mentors'
+import { Search, Clock, Sparkles, X, Users } from 'lucide-react'
 import { MentorCard } from '../components/mentor/MentorCard'
 import { BookingModal } from '../components/mentor/BookingModal'
 import { Button } from '../components/ui/Button'
-
-const SUBJECT_LIST = [
-  'Сите',
-  'Математика',
-  'Физика',
-  'Хемија',
-  'Биологија',
-  'Англиски',
-  'Германски',
-  'Програмирање',
-  'Историја',
-]
-
-const PRICE_FILTERS = [
-  { value: 'all', label: 'Сите цени' },
-  { value: 'low', label: '≤€9/час' },
-  { value: 'mid', label: '€10-12/час' },
-  { value: 'high', label: '>€12/час' },
-]
-
-const SORT_OPTIONS = [
-  { value: 'rating', label: 'Највисока оценка' },
-  { value: 'reviews', label: 'Најмногу рецензии' },
-  { value: 'price_asc', label: 'Цена: најниска' },
-  { value: 'price_desc', label: 'Цена: највисока' },
-]
+import { useLanguage } from '../context/LanguageContext'
+import { supabase } from '../lib/supabase'
 
 export function MentorDirectoryPage() {
+  const { t, language } = useLanguage()
+  const isMk = language !== 'en'
+
   const [searchParams, setSearchParams] = useSearchParams()
-  const initialSubject = searchParams.get('subject') || 'Сите'
+  const initialSubject = searchParams.get('subject') || (isMk ? 'Сите' : 'All')
 
   const [selectedSubject, setSelectedSubject] = useState(initialSubject)
   const [selectedPrice, setSelectedPrice] = useState('all')
@@ -43,47 +21,145 @@ export function MentorDirectoryPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [bookingMentor, setBookingMentor] = useState(null)
 
+  const [supabaseMentors, setSupabaseMentors] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function fetchMentors() {
+      setLoading(true)
+      try {
+        if (supabase) {
+          const { data: tsData, error: tsError } = await supabase
+            .from('teacher_subjects')
+            .select('id, level, hourly_rate, teacher_id, subject_id, profiles(full_name, bio, avatar_url), subjects(name)')
+
+          if (!tsError && tsData && tsData.length > 0) {
+            const mapped = tsData.map((ts) => ({
+              id: ts.id,
+              name: ts.profiles?.full_name || (isMk ? 'Верификуван Ментор' : 'Verified Mentor'),
+              bio: ts.profiles?.bio || '',
+              avatar: ts.profiles?.avatar_url || '',
+              subjects: ts.subjects?.name ? [ts.subjects.name] : [],
+              level: ts.level || 'Средно',
+              price: ts.hourly_rate || 10,
+              rating: 5.0,
+              reviews: 12,
+              available: true,
+            }))
+            if (isMounted) setSupabaseMentors(mapped)
+          } else {
+            const { data: profData } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('role', 'mentor')
+
+            if (profData && profData.length > 0) {
+              const mapped = profData.map((p) => ({
+                id: p.id,
+                name: p.full_name || (isMk ? 'Верификуван Ментор' : 'Verified Mentor'),
+                bio: p.bio || '',
+                avatar: p.avatar_url || '',
+                subjects: p.subjects || [],
+                level: p.level || 'Средно',
+                price: p.hourly_rate || 10,
+                rating: 5.0,
+                reviews: 12,
+                available: true,
+              }))
+              if (isMounted) setSupabaseMentors(mapped)
+            } else {
+              if (isMounted) setSupabaseMentors([])
+            }
+          }
+        } else {
+          if (isMounted) setSupabaseMentors([])
+        }
+      } catch (err) {
+        console.warn('Error fetching mentors:', err)
+        if (isMounted) setSupabaseMentors([])
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    fetchMentors()
+    return () => {
+      isMounted = false
+    }
+  }, [isMk])
+
+  const SUBJECT_LIST = [
+    isMk ? 'Сите' : 'All',
+    'Математика',
+    'Физика',
+    'Хемија',
+    'Биологија',
+    'Англиски',
+    'Германски',
+    'Програмирање',
+    'Историја',
+  ]
+
+  const PRICE_FILTERS = [
+    { value: 'all', label: isMk ? 'Сите цени' : 'All prices' },
+    { value: 'low', label: '≤€9/час' },
+    { value: 'mid', label: '€10-12/час' },
+    { value: 'high', label: '>€12/час' },
+  ]
+
+  const SORT_OPTIONS = [
+    { value: 'rating', label: isMk ? 'Највисока оценка' : 'Highest rating' },
+    { value: 'reviews', label: isMk ? 'Најмногу рецензии' : 'Most reviews' },
+    { value: 'price_asc', label: isMk ? 'Цена: најниска' : 'Price: low to high' },
+    { value: 'price_desc', label: isMk ? 'Цена: највисока' : 'Price: high to low' },
+  ]
+
   const filteredMentors = useMemo(() => {
-    return ALL_MENTORS.filter((m) => {
-      // Subject match
-      if (
-        selectedSubject !== 'Сите' &&
-        !m.subjects.some((s) => s.toLowerCase() === selectedSubject.toLowerCase())
-      ) {
-        return false
-      }
+    return supabaseMentors
+      .filter((m) => {
+        // Subject match
+        if (
+          selectedSubject !== 'Сите' &&
+          selectedSubject !== 'All' &&
+          !m.subjects.some((s) => s.toLowerCase().includes(selectedSubject.toLowerCase()))
+        ) {
+          return false
+        }
 
-      // Availability match
-      if (onlyAvailable && !m.available) {
-        return false
-      }
+        // Availability match
+        if (onlyAvailable && !m.available) {
+          return false
+        }
 
-      // Price match
-      if (selectedPrice === 'low' && m.price > 9) return false
-      if (selectedPrice === 'mid' && (m.price < 10 || m.price > 12)) return false
-      if (selectedPrice === 'high' && m.price <= 12) return false
+        // Price match
+        if (selectedPrice === 'low' && m.price > 9) return false
+        if (selectedPrice === 'mid' && (m.price < 10 || m.price > 12)) return false
+        if (selectedPrice === 'high' && m.price <= 12) return false
 
-      // Search match
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim()
-        const matchName = m.name.toLowerCase().includes(query)
-        const matchBadge = m.badge?.toLowerCase().includes(query)
-        const matchSubj = m.subjects.some((s) => s.toLowerCase().includes(query))
-        if (!matchName && !matchBadge && !matchSubj) return false
-      }
+        // Search match
+        if (searchQuery.trim()) {
+          const query = searchQuery.toLowerCase().trim()
+          const matchName = m.name.toLowerCase().includes(query)
+          const matchBadge = m.badge?.toLowerCase().includes(query)
+          const matchSubj = m.subjects.some((s) => s.toLowerCase().includes(query))
+          if (!matchName && !matchBadge && !matchSubj) return false
+        }
 
-      return true
-    }).sort((a, b) => {
-      if (sortBy === 'rating') return b.rating - a.rating
-      if (sortBy === 'reviews') return b.reviews - a.reviews
-      if (sortBy === 'price_asc') return a.price - b.price
-      if (sortBy === 'price_desc') return b.price - a.price
-      return 0
-    })
-  }, [selectedSubject, selectedPrice, sortBy, onlyAvailable, searchQuery])
+        return true
+      })
+      .sort((a, b) => {
+        if (sortBy === 'rating') return b.rating - a.rating
+        if (sortBy === 'reviews') return b.reviews - a.reviews
+        if (sortBy === 'price_asc') return a.price - b.price
+        if (sortBy === 'price_desc') return b.price - a.price
+        return 0
+      })
+  }, [supabaseMentors, selectedSubject, selectedPrice, sortBy, onlyAvailable, searchQuery])
 
   const handleResetFilters = () => {
-    setSelectedSubject('Сите')
+    setSelectedSubject(isMk ? 'Сите' : 'All')
     setSelectedPrice('all')
     setSortBy('rating')
     setOnlyAvailable(false)
@@ -92,7 +168,7 @@ export function MentorDirectoryPage() {
   }
 
   const isFilterActive =
-    selectedSubject !== 'Сите' ||
+    (selectedSubject !== 'Сите' && selectedSubject !== 'All') ||
     selectedPrice !== 'all' ||
     onlyAvailable ||
     searchQuery.trim() !== ''
@@ -104,13 +180,18 @@ export function MentorDirectoryPage() {
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-semibold mb-6 border border-primary/20">
             <Sparkles className="w-4 h-4 text-accent" />
-            <span>Верифицирани ментори</span>
+            <span>{isMk ? 'Верифицирани ментори' : 'Verified mentors'}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-dark mb-4 leading-tight max-w-3xl mx-auto">
-            Запознај ги нашите <span className="text-gradient">топ ментори</span>
+            {isMk ? 'Запознај ги нашите ' : 'Meet our '}{' '}
+            <span className="text-gradient">
+              {isMk ? 'топ ментори' : 'top mentors'}
+            </span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto mb-8">
-            Победници на државни олимпијади и натпревари со докажани резултати и љубов кон предавањето.
+            {isMk
+              ? 'Победници на државни олимпијади и натпревари со докажани резултати и љубов кон предавањето.'
+              : 'National olympiad winners and competition high-achievers with proven results and a passion for teaching.'}
           </p>
 
           {/* Search bar */}
@@ -120,7 +201,11 @@ export function MentorDirectoryPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Пребарај по име, предмет или признание..."
+              placeholder={
+                isMk
+                  ? 'Пребарај по име, предмет или признание...'
+                  : 'Search by name, subject, or achievement...'
+              }
               className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-card border border-border shadow-soft text-dark text-sm focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all placeholder:text-muted-foreground"
             />
             {searchQuery && (
@@ -141,7 +226,7 @@ export function MentorDirectoryPage() {
           {/* Subjects pills */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-2.5">
-              Предмет
+              {isMk ? 'Предмет' : 'Subject'}
             </label>
             <div className="flex flex-wrap gap-2">
               {SUBJECT_LIST.map((subj) => {
@@ -151,7 +236,7 @@ export function MentorDirectoryPage() {
                     key={subj}
                     onClick={() => {
                       setSelectedSubject(subj)
-                      if (subj !== 'Сите') {
+                      if (subj !== 'Сите' && subj !== 'All') {
                         setSearchParams({ subject: subj })
                       } else {
                         setSearchParams({})
@@ -174,7 +259,9 @@ export function MentorDirectoryPage() {
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
             {/* Price pills */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-muted-foreground">Цена:</span>
+              <span className="text-xs font-semibold text-muted-foreground">
+                {t('homeMentorsPriceLabel')}
+              </span>
               <div className="flex flex-wrap gap-1">
                 {PRICE_FILTERS.map((p) => (
                   <button
@@ -194,7 +281,9 @@ export function MentorDirectoryPage() {
 
             {/* Sort Dropdown */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-muted-foreground">Подреди:</span>
+              <span className="text-xs font-semibold text-muted-foreground">
+                {isMk ? 'Подреди:' : 'Sort by:'}
+              </span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -218,40 +307,48 @@ export function MentorDirectoryPage() {
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
-              Само достапни
+              {t('homeMentorsOnlyAvailable')}
             </button>
           </div>
 
           {/* Counts & Reset */}
           <div className="flex items-center justify-between pt-3 border-t border-border text-xs">
             <p className="text-muted-foreground">
-              Прикажани <strong className="text-dark">{filteredMentors.length}</strong> од {ALL_MENTORS.length} ментори
+              {isMk ? 'Прикажани ' : 'Showing '}{' '}
+              <strong className="text-dark">{filteredMentors.length}</strong>{' '}
+              {isMk ? 'од ' : 'of '}{supabaseMentors.length} {isMk ? 'ментори' : 'mentors'}
             </p>
             {isFilterActive && (
               <button
                 onClick={handleResetFilters}
                 className="text-primary font-bold hover:underline cursor-pointer"
               >
-                Ресетирај филтри
+                {t('resetFilters')}
               </button>
             )}
           </div>
         </div>
       </section>
 
-      {/* Mentors Grid */}
+      {/* Mentors Grid / Empty state */}
       <section className="container mx-auto px-4 sm:px-6">
-        {filteredMentors.length === 0 ? (
-          <div className="text-center py-16 bg-card rounded-3xl border border-border p-8 max-w-md mx-auto">
-            <p className="text-3xl mb-2">🔍</p>
-            <h3 className="text-lg font-bold text-dark mb-1">
-              Не се пронајдени ментори
+        {loading ? (
+          <div className="text-center py-20 text-muted-foreground animate-pulse font-medium">
+            {t('loading')}
+          </div>
+        ) : filteredMentors.length === 0 ? (
+          <div className="bg-card rounded-3xl p-8 sm:p-12 border border-border text-center max-w-lg mx-auto shadow-soft">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 border border-primary/20">
+              <Users className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-dark mb-2">
+              {t('noMentorsFound')}
             </h3>
-            <p className="text-xs text-muted-foreground mb-4">
-              Обидете се со ресетирање на филтрите или променете го поимот за пребарување.
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              {t('noMentorsFoundDesc')}
             </p>
             <Button variant="default" size="sm" onClick={handleResetFilters}>
-              Ресетирај филтри
+              {t('resetFilters')}
             </Button>
           </div>
         ) : (

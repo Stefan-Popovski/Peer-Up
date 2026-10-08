@@ -38,9 +38,9 @@ export function getInitials(name) {
 export function getAvatarColor(name) {
   const colors = [
     'bg-primary text-white',
-    'bg-accent text-dark',
+    'bg-accent text-[#071b3a]',
     'bg-green text-white',
-    'bg-dark text-white',
+    'bg-[#071b3a] dark:bg-slate-800 text-white',
   ]
   let hash = 0
   for (let i = 0; i < name.length; i++) {

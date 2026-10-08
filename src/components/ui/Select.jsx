@@ -13,7 +13,7 @@ export const Select = forwardRef(function Select(
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-xs font-semibold text-dark">
+        <label htmlFor={id} className="text-xs font-semibold text-foreground">
           {label}
           {required && <span className="ml-1 text-primary" aria-hidden="true">*</span>}
         </label>
@@ -27,7 +27,7 @@ export const Select = forwardRef(function Select(
           aria-invalid={!!error}
           aria-describedby={error ? errorId : undefined}
           className={cn(
-            'w-full appearance-none rounded-xl border px-4 py-2.5 pr-10 text-sm text-dark transition-all outline-none bg-background cursor-pointer',
+            'w-full appearance-none rounded-xl border px-4 py-2.5 pr-10 text-sm text-foreground transition-all outline-none bg-background cursor-pointer',
             'focus:ring-2 focus:ring-accent/30 focus:border-accent',
             error
               ? 'border-primary bg-primary/5 focus:ring-primary/20'
@@ -37,9 +37,9 @@ export const Select = forwardRef(function Select(
           )}
           {...props}
         >
-          {placeholder && <option value="">{placeholder}</option>}
+          {placeholder && <option value="" className="bg-card text-foreground">{placeholder}</option>}
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value} className="bg-card text-foreground">{opt.label}</option>
           ))}
         </select>
         <ChevronDown
