@@ -222,14 +222,14 @@ export function BecomeMentorInfoPage() {
                 ? 'Пополнете ја апликацијата во неколку едноставни чекори и станете дел од нашата заедница.'
                 : 'Fill out the application in a few simple steps and join our mentor network.'}
             </p>
-            <Link to="/stani-mentor">
+            <Link to="/stani-mentor" className="inline-flex w-full max-w-full sm:w-auto">
               <Button
                 variant="default"
                 size="lg"
-                className="text-lg px-10 py-5 h-auto rounded-2xl shadow-none hover:scale-105 transition-transform font-extrabold inline-flex items-center gap-3 bg-primary hover:bg-primary-600 text-white"
+                className="h-auto w-full max-w-full whitespace-normal rounded-2xl px-5 py-4 text-base text-center leading-tight shadow-none transition-transform hover:scale-105 sm:w-auto sm:px-10 sm:py-5 sm:text-lg font-extrabold inline-flex items-center gap-3 bg-primary hover:bg-primary-600 text-white"
               >
                 <span>{isMk ? 'Аплицирај за ментор' : 'Apply to Become a Mentor'}</span>
-                <ArrowRight className="w-6 h-6" />
+                <ArrowRight className="w-6 h-6 shrink-0" />
               </Button>
             </Link>
           </div>

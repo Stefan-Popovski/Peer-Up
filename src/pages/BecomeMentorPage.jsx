@@ -377,7 +377,7 @@ export function BecomeMentorPage() {
                               type="button"
                               key={value}
                               onClick={() => toggleSubject(value)}
-                              className={`flex items-center justify-between p-3 rounded-xl border text-sm font-medium transition-all text-left cursor-pointer ${
+                              className={`flex items-center justify-between p-2.5 sm:p-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-left cursor-pointer gap-1.5 ${
                                 isChecked
                                   ? 'border-primary bg-primary/10 text-primary font-bold ring-1 ring-primary'
                                   : 'border-border bg-background text-dark hover:border-primary/50'

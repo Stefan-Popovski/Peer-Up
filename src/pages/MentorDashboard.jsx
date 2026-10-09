@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { supabase } from '../lib/supabase'
-import DashboardHeader from '../components/DashboardHeader.jsx'
+import DashboardHeader from '../components/Dashboardheader.jsx'
 import MonthCalendar from '../components/Monthcalendar.jsx'
+import { Button } from '../components/ui/Button'
+import { AlertCircle, Plus, Trash2, BookOpen, Calendar, Check, X } from 'lucide-react'
 
 function toDateKey(iso) {
   const d = new Date(iso)
@@ -126,174 +128,235 @@ export default function MentorDashboard() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <DashboardHeader roleLabel={t('roleMentor')} name={profile?.full_name} />
 
-      <main className="max-w-5xl mx-auto px-5 py-10">
-        <h1 className="font-display font-semibold tracking-tight text-2xl">{t('teachSomething')}</h1>
-        <form onSubmit={listSubject} className="mt-6 grid sm:grid-cols-2 gap-4 max-w-xl">
-          <div>
-            <label className="text-xs text-inkSoft">{t('subject')}</label>
-            <select
-              value={subjectId}
-              onChange={(e) => setSubjectId(e.target.value)}
-              required
-              className="rounded px-3 py-2 text-sm mt-1 w-full"
-            >
-              {subjects.length === 0 && <option value="">—</option>}
-              {subjects.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="text-xs text-inkSoft">{t('levelYouTeach')}</label>
-            <select value={level} onChange={(e) => setLevel(e.target.value)} className="rounded px-3 py-2 text-sm mt-1 w-full">
-              <option value="Beginner">{t('beginner')}</option>
-              <option value="Intermediate">{t('intermediate')}</option>
-              <option value="Advanced">{t('advanced')}</option>
-            </select>
-          </div>
-          <div className="sm:col-span-2">
-            <label className="text-xs text-inkSoft">{t('rateLabel')}</label>
-            <input
-              type="number"
-              min="0"
-              value={rate}
-              onChange={(e) => setRate(e.target.value)}
-              placeholder={t('ratePlaceholder')}
-              className="rounded px-3 py-2 text-sm mt-1 w-full"
-            />
-          </div>
-          <button
-            type="submit"
-            className="rounded px-5 py-2.5 text-sm font-medium w-fit"
-            style={{ background: 'var(--gradient)', color: '#04252b' }}
-          >
-            {t('listSubject')}
-          </button>
-        </form>
-        {msg && (
-          <p className="text-sm mt-3" style={{ color: msg.type === 'error' ? '#b3541e' : 'var(--teal-mid)' }}>
-            {msg.text}
-          </p>
-        )}
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
-        <h2 className="font-display font-semibold tracking-tight text-2xl mt-14">{t('yourAvailability')}</h2>
-        <p className="text-sm text-inkSoft mt-2">{t('availabilityDesc')}</p>
+        {/* Teach Something Form */}
+        <section className="mb-12">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-dark mb-6">
+            {t('teachSomething')}
+          </h1>
 
-        <div className="mt-5 flex flex-col lg:flex-row gap-6 items-start">
-          <MonthCalendar markedDays={markedDays} selected={selectedDay} onSelect={setSelectedDay} />
-
-          <div className="flex-1 w-full">
-            {selectedDay ? (
-              <>
-                <form onSubmit={addSlot} className="flex flex-wrap items-end gap-3">
-                  <div>
-                    <label className="text-xs text-inkSoft">{t('starts')}</label>
-                    <input
-                      type="time"
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      required
-                      className="rounded px-3 py-2 text-sm mt-1"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-inkSoft">{t('ends')}</label>
-                    <input
-                      type="time"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      required
-                      className="rounded px-3 py-2 text-sm mt-1"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="rounded px-4 py-2 text-sm font-medium"
-                    style={{ background: 'var(--gradient)', color: '#04252b' }}
+          <div className="bg-card rounded-2xl p-6 border border-border shadow-soft max-w-xl">
+            <form onSubmit={listSubject} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-dark mb-1">
+                    {t('subject')}
+                  </label>
+                  <select
+                    value={subjectId}
+                    onChange={(e) => setSubjectId(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all cursor-pointer"
                   >
-                    {t('addSlot')}
-                  </button>
-                </form>
-                {slotMsg && (
-                  <p className="text-sm mt-2" style={{ color: '#b3541e' }}>
-                    {slotMsg.text}
-                  </p>
-                )}
-
-                <div className="mt-5 space-y-2">
-                  {slotsForSelectedDay.length === 0 && <p className="text-sm text-inkSoft">{t('noSlotsForDay')}</p>}
-                  {slotsForSelectedDay.map((s) => (
-                    <div
-                      key={s.id}
-                      className="rounded border border-line bg-paperDim p-3 flex items-center justify-between flex-wrap gap-2"
-                    >
-                      <span className="text-sm">
-                        {formatTime(s.start_time)}–{formatTime(s.end_time)}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="text-xs px-2 py-1 rounded-full border border-line"
-                          style={{ color: s.is_booked ? 'var(--teal-mid)' : 'var(--ink-soft)' }}
-                        >
-                          {s.is_booked ? t('booked') : t('open')}
-                        </span>
-                        {!s.is_booked && (
-                          <button onClick={() => deleteSlot(s.id)} className="text-xs text-inkSoft hover:text-ink">
-                            {t('remove')}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    {subjects.length === 0 && <option value="">—</option>}
+                    {subjects.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </>
-            ) : (
-              <p className="text-sm text-inkSoft">{t('pickADay')}</p>
+
+                <div>
+                  <label className="block text-xs font-semibold text-dark mb-1">
+                    {t('levelYouTeach')}
+                  </label>
+                  <select
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                    className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all cursor-pointer"
+                  >
+                    <option value="Beginner">{t('beginner')}</option>
+                    <option value="Intermediate">{t('intermediate')}</option>
+                    <option value="Advanced">{t('advanced')}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-dark mb-1">
+                  {t('rateLabel')}
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={rate}
+                  onChange={(e) => setRate(e.target.value)}
+                  placeholder={t('ratePlaceholder')}
+                  className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
+                />
+              </div>
+
+              <Button type="submit" variant="default" size="sm" className="font-bold gap-1.5">
+                <Plus className="w-4 h-4" />
+                {t('listSubject')}
+              </Button>
+            </form>
+
+            {msg && (
+              <div
+                className={`p-3 mt-4 rounded-xl text-xs flex items-center gap-2 ${
+                  msg.type === 'error'
+                    ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                    : 'bg-primary/10 text-primary border border-primary/20'
+                }`}
+              >
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{msg.text}</span>
+              </div>
             )}
           </div>
-        </div>
+        </section>
 
-        <h2 className="font-display font-semibold tracking-tight text-2xl mt-14">{t('requests')}</h2>
-        <div className="mt-6 space-y-3">
-          {requests.length === 0 && <p className="text-sm text-inkSoft">{t('noRequestsYet')}</p>}
-          {requests.map((r) => (
-            <div key={r.id} className="rounded border border-line bg-paperDim p-4 flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <p className="text-sm font-medium">
-                  {r.subjects?.name} with {r.learner?.full_name}
-                </p>
-                <p className="text-xs text-inkSoft mt-0.5">
-                  {r.availability ? formatSlot(r.availability) : new Date(r.created_at).toLocaleDateString()}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs px-2 py-1 rounded-full border border-line text-inkSoft">{r.status}</span>
-                {r.status === 'pending' && (
-                  <>
-                    <button
-                      onClick={() => decideRequest(r, 'confirmed')}
-                      className="rounded px-3 py-1.5 text-xs"
-                      style={{ background: 'var(--gradient)', color: '#04252b' }}
-                    >
-                      {t('confirm')}
-                    </button>
-                    <button
-                      onClick={() => decideRequest(r, 'denied')}
-                      className="rounded border border-line px-3 py-1.5 text-xs hover:bg-paper"
-                    >
-                      {t('deny')}
-                    </button>
-                  </>
-                )}
-              </div>
+        {/* Availability Calendar & Slots */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-extrabold text-dark mb-2">
+            {t('yourAvailability')}
+          </h2>
+          <p className="text-xs text-muted-foreground mb-6">
+            {t('availabilityDesc')}
+          </p>
+
+          <div className="bg-card rounded-2xl p-6 border border-border shadow-soft flex flex-col lg:flex-row gap-8 items-start">
+            <MonthCalendar markedDays={markedDays} selected={selectedDay} onSelect={setSelectedDay} />
+
+            <div className="flex-1 w-full">
+              {selectedDay ? (
+                <>
+                  <form onSubmit={addSlot} className="flex flex-wrap items-end gap-3 p-4 rounded-xl bg-muted/40 border border-border/50">
+                    <div>
+                      <label className="block text-xs font-semibold text-dark mb-1">{t('starts')}</label>
+                      <input
+                        type="time"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                        required
+                        className="rounded-xl border border-input bg-background px-3 py-2 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-dark mb-1">{t('ends')}</label>
+                      <input
+                        type="time"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                        required
+                        className="rounded-xl border border-input bg-background px-3 py-2 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none"
+                      />
+                    </div>
+                    <Button type="submit" variant="default" size="sm" className="font-bold h-10">
+                      {t('addSlot')}
+                    </Button>
+                  </form>
+
+                  {slotMsg && (
+                    <p className="text-xs text-red-500 font-medium mt-2">{slotMsg.text}</p>
+                  )}
+
+                  <div className="mt-6 space-y-2">
+                    {slotsForSelectedDay.length === 0 && (
+                      <p className="text-xs text-muted-foreground">{t('noSlotsForDay')}</p>
+                    )}
+                    {slotsForSelectedDay.map((s) => (
+                      <div
+                        key={s.id}
+                        className="rounded-xl border border-border bg-background p-3 flex items-center justify-between flex-wrap gap-2"
+                      >
+                        <span className="text-sm font-semibold text-dark">
+                          {formatTime(s.start_time)}–{formatTime(s.end_time)}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${
+                              s.is_booked
+                                ? 'bg-primary/10 text-primary border-primary/20'
+                                : 'bg-muted text-muted-foreground border-border'
+                            }`}
+                          >
+                            {s.is_booked ? t('booked') : t('open')}
+                          </span>
+                          {!s.is_booked && (
+                            <button
+                              onClick={() => deleteSlot(s.id)}
+                              className="text-xs text-muted-foreground hover:text-red-500 transition-colors p-1"
+                              aria-label="Remove slot"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="p-8 text-center border border-dashed border-border rounded-xl text-xs text-muted-foreground">
+                  {t('pickADay')}
+                </div>
+              )}
             </div>
-          ))}
-        </div>
+          </div>
+        </section>
+
+        {/* Requests Section */}
+        <section>
+          <h2 className="text-2xl font-extrabold text-dark mb-6">
+            Booking Requests
+          </h2>
+          <div className="space-y-3">
+            {requests.length === 0 ? (
+              <div className="p-6 bg-card rounded-2xl border border-border text-sm text-muted-foreground">
+                No session requests yet.
+              </div>
+            ) : (
+              requests.map((r) => (
+                <div key={r.id} className="bg-card rounded-2xl p-5 border border-border shadow-soft flex items-center justify-between flex-wrap gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-dark">
+                      {r.subjects?.name} — <span className="font-normal text-muted-foreground">Student: {r.learner?.full_name}</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {r.availability ? formatSlot(r.availability) : new Date(r.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {r.status === 'pending' ? (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => decideRequest(r, 'confirmed')}
+                          className="gap-1.5 text-xs font-bold"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          Confirm
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => decideRequest(r, 'denied')}
+                          className="gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          Deny
+                        </Button>
+                      </>
+                    ) : (
+                      <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+                        {r.status}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+
       </main>
     </div>
   )

@@ -433,8 +433,12 @@ export function HomePage() {
 
           {/* Button */}
           <div className="text-center mt-14">
-            <Link to="/kako-raboti">
-              <Button variant="heroOutline" size="lg" className="shadow-none hover:shadow-none">
+            <Link to="/kako-raboti" className="inline-flex w-full max-w-full sm:w-auto">
+              <Button
+                variant="heroOutline"
+                size="lg"
+                className="h-auto min-h-14 w-full max-w-full whitespace-normal px-4 py-3 text-center leading-tight shadow-none hover:shadow-none sm:w-auto sm:px-8"
+              >
                 {t('homeHowItWorksMore')}
                 <ArrowRight className="w-4 h-4 ml-2 text-primary" />
               </Button>
