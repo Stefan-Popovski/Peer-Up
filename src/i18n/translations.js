@@ -14,9 +14,6 @@ export const translations = {
     homeHeroTitle1: 'Learn from ',
     homeHeroTitle2: 'young mentors ',
     homeHeroTitle3: 'who understand you',
-    homeHeroBenefit1: 'Available immediately',
-    homeHeroBenefit2: 'From €8/hr',
-    homeHeroBenefit3: '100% online',
     homeFindMentor: 'Find a mentor',
     homeBecomeMentor: 'Become a mentor',
     homeStatStudents: '500+ satisfied students',
@@ -66,7 +63,7 @@ export const translations = {
     homeCtaBadge: 'Join the community',
     homeCtaTitle: 'Want to become a mentor?',
     homeCtaSubtitle: 'Use your knowledge and help younger students. Earn while making a positive impact on their success.',
-    homeCtaBox1Title: '300-600 MKD',
+    homeCtaBox1Title: '300-500 MKD',
     homeCtaBox1Desc: 'per hour',
     homeCtaBox2Title: 'Flexible',
     homeCtaBox2Desc: 'schedule',
@@ -76,7 +73,7 @@ export const translations = {
     homeCtaChecklistTitle: 'What are we looking for?',
     homeCtaCheck1: 'High school or university student with excellent grades',
     homeCtaCheck2: 'Communicative, patient, and passionate about sharing knowledge',
-    homeCtaCheck3: 'Minimum 4 hours weekly availability for online sessions',
+    homeCtaCheck3: 'Minimum 3 hours weekly availability for online sessions',
 
     // --- Auth page ---
     back: '← back',
@@ -271,9 +268,6 @@ export const translations = {
     homeHeroTitle1: 'Учи од ',
     homeHeroTitle2: 'млади ментори ',
     homeHeroTitle3: 'кои те разбираат',
-    homeHeroBenefit1: 'Веднаш достапни',
-    homeHeroBenefit2: 'Од 300 ден./час',
-    homeHeroBenefit3: '100% онлајн',
     homeFindMentor: 'Најди ментор',
     homeBecomeMentor: 'Стани ментор',
     homeStatStudents: '500+ задоволни ученици',
@@ -297,7 +291,7 @@ export const translations = {
     homeMotwFullProfile: 'Види го целиот профил на ',
 
     homeHowItWorksTitle: 'Како функционира?',
-    homeHowItWorksSubtitle: 'Едноставен процес за да најдеш совршен ментор за твоите потреби',
+    homeHowItWorksSubtitle: 'Едноставен процес за да најдеш совршен ментор за Вашите потреби',
     homeHowItWorksMore: 'Дознај повеќе за процесот',
 
     homeSubjectsTitle: 'Предмети и области',
@@ -322,8 +316,8 @@ export const translations = {
 
     homeCtaBadge: 'Придружи се на заедницата',
     homeCtaTitle: 'Сакаш да станеш ментор?',
-    homeCtaSubtitle: 'Искористи го твоето знаење и помогни им на помладите ученици. Заработи додека правиш позитивна промена во нивниот успех.',
-    homeCtaBox1Title: '300-600 ден.',
+    homeCtaSubtitle: 'Искористете го Вашето знаење и помогнете им на помладите ученици. Заработете додека правите позитивна промена во нивниот успех.',
+    homeCtaBox1Title: '300-500 ден.',
     homeCtaBox1Desc: 'по час',
     homeCtaBox2Title: 'Флексибилен',
     homeCtaBox2Desc: 'распоред',
@@ -333,7 +327,7 @@ export const translations = {
     homeCtaChecklistTitle: 'Што бараме?',
     homeCtaCheck1: 'Средношколец или студент со одличен успех и оценки',
     homeCtaCheck2: 'Комуникативност, стрпливост и желба за пренесување знаење',
-    homeCtaCheck3: 'Минимум 4 часа неделна достапност за онлајн часови',
+    homeCtaCheck3: 'Минимум 3 часа неделна достапност за онлајн часови',
 
     // --- Auth page ---
     back: '← назад',
@@ -355,7 +349,7 @@ export const translations = {
     submitApplication: 'Испрати пријава',
     sending: 'Се испраќа…',
     thanks: 'Благодариме!',
-    applicationSent: 'Твојата пријава за ментор е примена — ја прегледуваме рачно и ќе те контактираме на',
+    applicationSent: 'Вашата пријава за ментор е примена — ја прегледуваме рачно и ќе Ве контактираме на',
     backHome: '← Назад на почетна',
 
     // --- Dashboard / shared ---
@@ -455,7 +449,7 @@ export const translations = {
     contactEmailLabel: 'Емаил адреса *',
     contactEmailPlaceholder: 'ana@primer.mk',
     contactMessageLabel: 'Порака *',
-    contactMessagePlaceholder: 'Твојата порака…',
+    contactMessagePlaceholder: 'Вашата порака…',
     contactSendBtn: 'Испрати порака',
     contactEmailDirectLabel: 'Е-пошта за директен контакт',
     contactSafetyTitle: 'Безбедност и заштита',
@@ -477,7 +471,7 @@ export const translations = {
 
     // --- Pricing page ---
     pricingBadge: 'Транспарентен ценовник',
-    pricingTitle: 'Инвестиција во твоето знаење',
+    pricingTitle: 'Инвестиција во Вашето знаење',
     pricingTitleHighlight: 'без скриени трошоци',
     pricingSubtitle: 'Избери поединечен час или заштеди со пакет. Сите опции се со загарантиран квалитет и поддршка.',
     pricingPopular: 'Најпопуларен избор',
@@ -495,7 +489,7 @@ export const translations = {
     howFindMentorBtn: 'Најди ментор сега',
     howExploreSubjectsBtn: 'Истражи предмети',
     howStepsTitle: 'Четири чекори до Вашиот прв час',
-    howStepsSubtitle: 'Сè е дизајнирано да биде брзо, интуитивно и целосно прилагодено на твоето темпо.',
+    howStepsSubtitle: 'Сè е дизајнирано да биде брзо, интуитивно и целосно прилагодено на Вашето темпо.',
     howAdvantageBadge: 'Зошто врсничко менторство?',
     howAdvantageTitle: 'PeerUp vs Традиционални приватни часови',
     howAdvantageSubtitle: 'Зошто младите ментори постигнуваат подобри резултати кај учениците:',

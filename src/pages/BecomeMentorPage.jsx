@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, DollarSign, Calendar, Award, Send, CheckCircle2, AlertCircle } from 'lucide-react'
+import { ArrowLeft, DollarSign, Calendar, Award, Send, CheckCircle2, AlertCircle, ChevronDown, Info } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { supabase } from '../lib/supabase'
 import { useLanguage } from '../context/LanguageContext'
@@ -10,18 +10,26 @@ export function BecomeMentorPage() {
   const isMk = language !== 'en'
 
   const [selectedSubjects, setSelectedSubjects] = useState([])
+  const [otherSubject, setOtherSubject] = useState('')
   const [fields, setFields] = useState({
     firstName: '', lastName: '', birthDate: '',
     email: '', phone: '', education: '',
-    achievements: '', availability: '',
+    achievements: '', motivation: '', availability: '',
   })
 
   const setField = (name, value) =>
     setFields((prev) => ({ ...prev, [name]: value }))
 
   const isFormValid =
-    Object.values(fields).every((v) => v.trim() !== '') &&
-    selectedSubjects.length > 0
+    fields.firstName.trim() !== '' &&
+    fields.lastName.trim() !== '' &&
+    fields.birthDate.trim() !== '' &&
+    fields.email.trim() !== '' &&
+    fields.phone.trim() !== '' &&
+    fields.education.trim() !== '' &&
+    fields.availability.trim() !== '' &&
+    selectedSubjects.length > 0 &&
+    (!selectedSubjects.includes('Останато') || otherSubject.trim() !== '')
 
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -41,9 +49,13 @@ export function BecomeMentorPage() {
   ], [isMk])
 
   const toggleSubject = (value) => {
-    setSelectedSubjects((prev) =>
-      prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
-    )
+    setSelectedSubjects((prev) => {
+      const next = prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
+      if (!next.includes('Останато')) {
+        setOtherSubject('')
+      }
+      return next
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -60,6 +72,20 @@ export function BecomeMentorPage() {
       return
     }
 
+    const otherSubjectVal = formData.get('otherSubject')?.toString().trim() || ''
+    if (selectedSubjects.includes('Останато') && !otherSubjectVal) {
+      setErrorMsg(
+        isMk
+          ? 'Ве молиме специфицирајте го предметот во полето Останато.'
+          : 'Please specify the subject for the Other option.'
+      )
+      return
+    }
+
+    const finalSubjects = selectedSubjects.map((s) =>
+      s === 'Останато' && otherSubjectVal ? `Останато (${otherSubjectVal})` : s
+    )
+
     const payload = {
       firstName:    formData.get('firstName')?.toString().trim(),
       lastName:     formData.get('lastName')?.toString().trim(),
@@ -70,7 +96,7 @@ export function BecomeMentorPage() {
       achievements: formData.get('achievements')?.toString().trim(),
       motivation:   formData.get('motivation')?.toString().trim() || '',
       availability: formData.get('availability')?.toString().trim(),
-      subjects:     selectedSubjects,
+      subjects:     finalSubjects,
     }
 
     if (
@@ -112,7 +138,8 @@ export function BecomeMentorPage() {
         setSuccess(true)
         form.reset()
         setSelectedSubjects([])
-        setFields({ firstName: '', lastName: '', birthDate: '', email: '', phone: '', education: '', achievements: '', availability: '' })
+        setOtherSubject('')
+        setFields({ firstName: '', lastName: '', birthDate: '', email: '', phone: '', education: '', achievements: '', motivation: '', availability: '' })
       }, 500)
     }
   }
@@ -161,44 +188,7 @@ export function BecomeMentorPage() {
               </p>
             </div>
 
-            {/* Benefits Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-              <div className="bg-card rounded-2xl p-5 text-center shadow-soft border border-border">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-                  <DollarSign className="w-6 h-6" />
-                </div>
-                <p className="text-xl font-bold text-dark">
-                  {isMk ? '300-600 ден./час' : '€8-12 / hr'}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {isMk ? 'Заработка' : 'Earnings'}
-                </p>
-              </div>
 
-              <div className="bg-card rounded-2xl p-5 text-center shadow-soft border border-border">
-                <div className="w-12 h-12 rounded-xl bg-accent/20 text-dark flex items-center justify-center mx-auto mb-3 border border-accent/40">
-                  <Calendar className="w-6 h-6 text-primary" />
-                </div>
-                <p className="text-xl font-bold text-dark">
-                  {isMk ? 'Флексибилно' : 'Flexible'}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {isMk ? 'Распоред' : 'Schedule'}
-                </p>
-              </div>
-
-              <div className="bg-card rounded-2xl p-5 text-center shadow-soft border border-border">
-                <div className="w-12 h-12 rounded-xl bg-green/15 text-green flex items-center justify-center mx-auto mb-3 border border-green/30">
-                  <Award className="w-6 h-6" />
-                </div>
-                <p className="text-xl font-bold text-dark">
-                  {isMk ? 'CV Искуство' : 'CV Experience'}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {isMk ? 'За Вашата кариера' : 'For your career'}
-                </p>
-              </div>
-            </div>
 
             {/* Application Form Card */}
             <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-border">
@@ -212,7 +202,7 @@ export function BecomeMentorPage() {
                   </h2>
                   <p className="text-muted-foreground max-w-md mx-auto text-base leading-relaxed">
                     {isMk
-                      ? 'Ти благодариме за интересот. Нашиот тим ќе ги разгледа твоите информации и ќе те контактира во најкраток можен рок за следните чекори.'
+                      ? 'Ти благодариме за интересот. Нашиот тим ќе ги разгледа Вашите информации и ќе Ве контактира во најкраток можен рок за следните чекори.'
                       : 'Thank you for your interest. Our team will review your details and contact you as soon as possible about the next steps.'}
                   </p>
                   <div className="pt-6 flex flex-col sm:flex-row gap-3 justify-center">
@@ -257,6 +247,8 @@ export function BecomeMentorPage() {
                           type="text"
                           required
                           maxLength={50}
+                          value={fields.firstName}
+                          onChange={(e) => setField('firstName', e.target.value)}
                           placeholder={isMk ? 'Внесете го Вашето име' : 'Enter your first name'}
                           className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
                         />
@@ -271,6 +263,8 @@ export function BecomeMentorPage() {
                           type="text"
                           required
                           maxLength={50}
+                          value={fields.lastName}
+                          onChange={(e) => setField('lastName', e.target.value)}
                           placeholder={isMk ? 'Внесете го Вашето презиме' : 'Enter your last name'}
                           className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
                         />
@@ -280,15 +274,28 @@ export function BecomeMentorPage() {
                     {/* Date of Birth & Phone */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label htmlFor="birthDate" className="block text-xs font-semibold text-dark">
-                          {isMk ? 'Датум на раѓање' : 'Date of birth'} <span className="text-red-500">*</span>
-                        </label>
+                        <div className="flex items-center gap-1.5">
+                          <label htmlFor="birthDate" className="block text-xs font-semibold text-dark">
+                            {isMk ? 'Датум на раѓање' : 'Date of birth'} <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative group inline-flex items-center">
+                            <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-primary cursor-pointer transition-colors" />
+                            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 p-2.5 bg-slate-900 text-slate-100 text-xs rounded-xl shadow-xl border border-slate-700/50 z-30 text-center leading-relaxed pointer-events-none">
+                              {isMk
+                                ? 'Потребен ни е Вашиот датум на раѓање бидејќи мора да имате најмалку 16 години за да можете да потпишете договор за менторство со нас.'
+                                : 'We need your date of birth because you must be at least 16 years old to sign a mentorship agreement with us.'}
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-slate-900" />
+                            </div>
+                          </div>
+                        </div>
                         <input
                           id="birthDate"
                           name="birthDate"
                           type="text"
                           required
                           maxLength={10}
+                          value={fields.birthDate}
+                          onChange={(e) => setField('birthDate', e.target.value)}
                           placeholder={isMk ? 'дд/мм/гг' : 'dd/mm/yy'}
                           className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
                         />
@@ -303,6 +310,8 @@ export function BecomeMentorPage() {
                           type="tel"
                           required
                           maxLength={20}
+                          value={fields.phone}
+                          onChange={(e) => setField('phone', e.target.value)}
                           placeholder="+389 XX XXX XXX"
                           className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
                         />
@@ -320,6 +329,8 @@ export function BecomeMentorPage() {
                         type="email"
                         required
                         maxLength={100}
+                        value={fields.email}
+                        onChange={(e) => setField('email', e.target.value)}
                         placeholder="example@email.com"
                         className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
                       />
@@ -339,6 +350,8 @@ export function BecomeMentorPage() {
                         type="text"
                         required
                         maxLength={120}
+                        value={fields.education}
+                        onChange={(e) => setField('education', e.target.value)}
                         placeholder={
                           isMk
                             ? 'пр. Студент на ФИНКИ, 2ра година / ПСУ Јахја Кемал'
@@ -382,6 +395,24 @@ export function BecomeMentorPage() {
                           )
                         })}
                       </div>
+                      {selectedSubjects.includes('Останато') && (
+                        <div className="pt-2 space-y-1.5">
+                          <label htmlFor="otherSubject" className="block text-xs font-semibold text-dark">
+                            {isMk ? 'Специфицирајте друг предмет' : 'Specify other subject'} <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            id="otherSubject"
+                            name="otherSubject"
+                            type="text"
+                            required
+                            value={otherSubject}
+                            onChange={(e) => setOtherSubject(e.target.value)}
+                            maxLength={100}
+                            placeholder={isMk ? 'Внесете друг предмет' : 'Enter another subject'}
+                            className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
+                          />
+                        </div>
+                      )}
                       {selectedSubjects.length === 0 && (
                         <p className="text-xs text-muted-foreground">
                           {isMk ? '* Избери барем еден предмет' : '* Select at least one subject'}
@@ -395,17 +426,17 @@ export function BecomeMentorPage() {
                         {isMk
                           ? 'Достигнувања, натпревари и искуство'
                           : 'Achievements, competitions & experience'}{' '}
-                        <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         id="achievements"
                         name="achievements"
                         rows={4}
-                        required
                         maxLength={1000}
+                        value={fields.achievements}
+                        onChange={(e) => setField('achievements', e.target.value)}
                         placeholder={
                           isMk
-                            ? 'Опиши ги твоите академски достигнувања, учества на државни/меѓународни натпревари, олимпијади, сертификати или претходно искуство со предавање...'
+                            ? 'Опишете ги Вашите академски достигнувања, учества на државни/меѓународни натпревари, олимпијади, сертификати или претходно искуство со предавање...'
                             : 'Describe your academic achievements, participation in national/international competitions, olympiads, certifications, or previous teaching experience...'
                         }
                         className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all resize-none"
@@ -422,6 +453,8 @@ export function BecomeMentorPage() {
                         name="motivation"
                         rows={3}
                         maxLength={500}
+                        value={fields.motivation}
+                        onChange={(e) => setField('motivation', e.target.value)}
                         placeholder={
                           isMk
                             ? 'Кажи ни повеќе за Вашата мотивација и Вашиот пристап кон учењето...'
@@ -437,19 +470,30 @@ export function BecomeMentorPage() {
                         {isMk ? 'Неделна достапност' : 'Weekly availability'}{' '}
                         <span className="text-red-500">*</span>
                       </label>
-                      <input
-                        id="availability"
-                        name="availability"
-                        type="text"
-                        required
-                        maxLength={100}
-                        placeholder={
-                          isMk
-                            ? 'пр. 8-12 часа неделно, попладне и викенди'
-                            : 'e.g. 8-12 hours per week, afternoons and weekends'
-                        }
-                        className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-dark placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"
-                      />
+                      <div className="relative">
+                        <select
+                          id="availability"
+                          name="availability"
+                          required
+                          value={fields.availability}
+                          onChange={(e) => setField('availability', e.target.value)}
+                          className="w-full appearance-none rounded-xl border border-input bg-background px-4 py-3 pr-10 text-sm text-dark focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all cursor-pointer"
+                        >
+                          <option value="" disabled className="text-muted-foreground bg-card">
+                            {isMk ? 'Изберете неделна достапност' : 'Select weekly availability'}
+                          </option>
+                          <option value="од 3 до 5 часа неделно" className="bg-card text-dark">
+                            {isMk ? 'од 3 до 5 часа неделно' : 'from 3 to 5 hours weekly'}
+                          </option>
+                          <option value="од 6 до 10 часа неделно" className="bg-card text-dark">
+                            {isMk ? 'од 6 до 10 часа неделно' : 'from 6 to 10 hours weekly'}
+                          </option>
+                          <option value="10+ часа неделно" className="bg-card text-dark">
+                            {isMk ? '10+ часа неделно' : '10+ hours weekly'}
+                          </option>
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
                     </div>
 
                     {/* Submit Button */}
@@ -459,7 +503,7 @@ export function BecomeMentorPage() {
                         variant="default"
                         size="lg"
                         className="w-full gap-2 text-base shadow-soft"
-                        disabled={submitting || selectedSubjects.length === 0}
+                        disabled={submitting || !isFormValid}
                         loading={submitting}
                       >
                         {submitting

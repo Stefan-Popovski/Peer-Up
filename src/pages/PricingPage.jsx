@@ -135,7 +135,7 @@ export function PricingPage() {
     {
       q: isMk ? 'Што доколку менторот не ми одговара?' : 'What if the mentor is not the right fit?',
       a: isMk
-        ? 'Твоето задоволство е наш главен приоритет. Доколку по првиот час не си задоволен/а, веднаш ти овозможуваме бесплатен час со друг ментор или 100% рефундирање.'
+        ? 'Вашето задоволство е наш главен приоритет. Доколку по првиот час не сте задоволни, веднаш Ви овозможуваме бесплатен час со друг ментор или 100% рефундирање.'
         : 'Your satisfaction is our top priority. If you are not satisfied after your first session, we immediately offer a free session with another mentor or a 100% refund.',
     },
     {

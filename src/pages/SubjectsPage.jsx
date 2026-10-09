@@ -209,7 +209,7 @@ export function SubjectsPage() {
                 {t('subjectsRequest')}
               </Button>
             </Link>
-            <Link to="/stani-mentor">
+            <Link to="/stani-mentor-info">
               <Button variant="outline">
                 {t('subjectsApplyMentor')}
               </Button>

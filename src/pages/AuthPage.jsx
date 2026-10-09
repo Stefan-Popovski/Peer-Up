@@ -113,7 +113,7 @@ export default function AuthPage() {
 
         <p className="text-xs text-inkSoft mt-4">
           {t('wantTeachInstead')}{' '}
-          <Link to="/stani-mentor" style={{ color: 'var(--teal-mid)' }}>
+          <Link to="/stani-mentor-info" style={{ color: 'var(--teal-mid)' }}>
             {t('applyMentor')}
           </Link>
         </p>

@@ -9,6 +9,7 @@ import { PricingPage } from '../pages/PricingPage'
 import { MentorDirectoryPage } from '../pages/MentorDirectoryPage'
 import { MentorProfilePage } from '../pages/MentorProfilePage'
 import { BecomeMentorPage } from '../pages/BecomeMentorPage'
+import { BecomeMentorInfoPage } from '../pages/BecomeMentorInfoPage'
 import { FaqPage } from '../pages/FaqPage'
 import { ContactPage } from '../pages/ContactPage'
 import { ReportPage } from '../pages/ReportPage'
@@ -59,6 +60,11 @@ export const router = createBrowserRouter([
       { path: 'contact', element: <ContactPage /> },
       { path: 'kontakt', element: <ContactPage /> },
       { path: 'report', element: <ReportPage /> },
+
+      // Become Mentor Landing / Info Page (With Navbar & Footer)
+      { path: 'stani-mentor-info', element: <BecomeMentorInfoPage /> },
+      { path: 'become-mentor-info', element: <BecomeMentorInfoPage /> },
+      { path: 'zosto-stani-mentor', element: <BecomeMentorInfoPage /> },
 
       // Legal
       { path: 'terms', element: <TermsPage /> },

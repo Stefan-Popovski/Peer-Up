@@ -69,7 +69,7 @@ export function FaqPage() {
                         {typeof item.answer === 'string' && item.answer.includes(CLICK_HERE_MARKER) ? (
                           <>
                             {item.answer.split(CLICK_HERE_MARKER)[0]}(
-                            <Link to="/stani-mentor" className="text-primary font-semibold underline hover:text-primary/80">
+                            <Link to="/stani-mentor-info" className="text-primary font-semibold underline hover:text-primary/80">
                               {isMk ? 'кликни тука' : 'click here'}
                             </Link>
                             ){item.answer.split(CLICK_HERE_MARKER)[1]}

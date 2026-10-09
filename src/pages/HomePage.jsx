@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Sparkles,
@@ -23,6 +23,92 @@ import { MentorCard } from '../components/mentor/MentorCard'
 import { BookingModal } from '../components/mentor/BookingModal'
 import { useLanguage } from '../context/LanguageContext'
 import { supabase } from '../lib/supabase'
+
+function TimelineStepItem({ step, index, isMobile = false }) {
+  const [isVisible, setIsVisible] = useState(false)
+  const domRef = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    )
+
+    const currentRef = domRef.current
+    if (currentRef) {
+      observer.observe(currentRef)
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef)
+      }
+    }
+  }, [])
+
+  const delayMs = index * 120
+
+  if (isMobile) {
+    return (
+      <div
+        ref={domRef}
+        style={{
+          transitionDelay: isVisible ? `${delayMs}ms` : '0ms',
+        }}
+        className={`relative flex items-center gap-4 group transition-all duration-500 ease-out transform ${
+          isVisible
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-6 scale-90'
+        }`}
+      >
+        <div className="absolute -left-[31px] w-10 h-10 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center border-4 border-background shrink-0">
+          {step.step}
+        </div>
+        <div className="pl-6">
+          <h3 className="text-base font-bold text-dark">
+            {step.title}
+          </h3>
+          <p className="text-xs text-muted-foreground font-medium">
+            {step.subtitle}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div
+      ref={domRef}
+      style={{
+        transitionDelay: isVisible ? `${delayMs}ms` : '0ms',
+      }}
+      className={`flex flex-col items-center text-center group cursor-pointer transition-all duration-500 ease-out transform ${
+        isVisible
+          ? 'opacity-100 translate-y-0 scale-100'
+          : 'opacity-0 translate-y-10 scale-75'
+      }`}
+    >
+      <div className="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center border-4 border-background transition-transform duration-200 group-hover:scale-110 shadow-none">
+        {step.step}
+      </div>
+      <div className="mt-5 space-y-1">
+        <h3 className="text-lg font-bold text-dark">
+          {step.title}
+        </h3>
+        <p className="text-sm text-muted-foreground font-medium">
+          {step.subtitle}
+        </p>
+      </div>
+    </div>
+  )
+}
 
 export function HomePage() {
   const navigate = useNavigate()
@@ -131,23 +217,23 @@ export function HomePage() {
   const HOW_STEPS = [
     {
       step: '1',
-      title: isMk ? 'Пребарај ментор' : 'Search for a mentor',
-      description: isMk ? 'Избери предмет и ниво. Филтрирај според оценки, искуство и достапност.' : 'Select subject and level. Filter by ratings, experience, and availability.',
+      title: isMk ? 'Избери' : 'Select',
+      subtitle: isMk ? 'предмет' : 'subject',
     },
     {
       step: '2',
-      title: isMk ? 'Закажи час' : 'Book a session',
-      description: isMk ? 'Избери термин кој ти одговара. Флексибилни часови од 30 до 90 минути.' : 'Choose a time slot that suits you. Flexible sessions from 30 to 90 minutes.',
+      title: isMk ? 'Пронајди' : 'Find',
+      subtitle: isMk ? 'ментор' : 'mentor',
     },
     {
       step: '3',
-      title: isMk ? 'Учи онлајн' : 'Learn online',
-      description: isMk ? 'Поврзи се преку Google Meet. Без патување, од удобноста на домот.' : 'Connect via Google Meet. No travel needed, right from home.',
+      title: isMk ? 'Закажи' : 'Book',
+      subtitle: isMk ? 'термин' : 'session',
     },
     {
       step: '4',
-      title: isMk ? 'Постигни успех' : 'Achieve success',
-      description: isMk ? 'Следи го напредокот и постигни ги своите академски цели со самодоверба.' : 'Track your progress and achieve your academic goals with confidence.',
+      title: isMk ? 'Учи' : 'Learn',
+      subtitle: isMk ? 'онлајн' : 'online',
     },
   ]
 
@@ -167,7 +253,7 @@ export function HomePage() {
     {
       question: isMk ? 'Колку чини еден час?' : 'How much does a session cost?',
       answer: isMk
-        ? 'Цената е 300-600 денари по час. Ова е поевтино од традиционалните приватни часови, а квалитетот е загарантиран преку нашиот систем на оценување.'
+        ? 'Цената е 400-700 денари по час. Ова е поевтино од традиционалните приватни часови, а квалитетот е загарантиран преку нашиот систем на оценување.'
         : 'The price is €6-€10 per hour. This is more affordable than traditional private tutoring, with quality backed by our rating system.',
     },
     {
@@ -179,7 +265,7 @@ export function HomePage() {
     {
       question: isMk ? 'Можам ли да го сменам менторот?' : 'Can I change my mentor?',
       answer: isMk
-        ? 'Да, апсолутно! Ако сметаш дека друг ментор би бил подобар за тебе, слободно можеш да закажеш час со друг ментор. Нашата цел е да најдеш соодветен ментор за твоите образовни потреби и цели.'
+        ? 'Да, апсолутно! Ако сметаш дека друг ментор би бил подобар за тебе, слободно можеш да закажеш час со друг ментор. Нашата цел е да најдеш соодветен ментор за Вашите образовни потреби и цели.'
         : 'Yes, absolutely! If you feel another mentor would suit you better, you are free to book with anyone else.',
     },
     {
@@ -189,7 +275,7 @@ export function HomePage() {
           {isMk
             ? 'Ако си талентиран средношколец или студент со одлични резултати во одредена сфера, можеш да аплицираш преку понудената форма за ментори ('
             : 'If you are a talented student with top grades in a subject, you can apply using our mentor form ('}
-          <Link to="/stani-mentor" className="text-primary font-semibold underline hover:text-primary/80">
+          <Link to="/stani-mentor-info" className="text-primary font-semibold underline hover:text-primary/80">
             {isMk ? 'кликни тука' : 'click here'}
           </Link>
           {isMk
@@ -227,15 +313,11 @@ export function HomePage() {
     <div className="min-h-screen">
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[92vh] pt-28 pb-20 overflow-hidden flex items-center bg-background">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-soft pointer-events-none" />
-        <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-accent/20 rounded-full blur-3xl animate-pulse-soft pointer-events-none" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-green/10 rounded-full blur-3xl pointer-events-none" />
-
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
             {/* Left Col */}
             <div className="flex-1 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs sm:text-sm font-semibold mb-6 animate-fade-in-up backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs sm:text-sm font-semibold mb-6 animate-fade-in-up">
                 <Sparkles className="w-4 h-4 text-accent" />
                 <span>{t('homeHeroBadge')}</span>
               </div>
@@ -244,36 +326,21 @@ export function HomePage() {
                 {t('homeHeroHook')}
               </p>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-dark leading-[1.1] mb-6 animate-fade-in-up">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-dark leading-[1.1] mb-12 animate-fade-in-up">
                 {t('homeHeroTitle1')}{' '}
-                <span className="text-gradient">{t('homeHeroTitle2')}</span>{' '}
+                <span className="text-primary">{t('homeHeroTitle2')}</span>{' '}
                 {t('homeHeroTitle3')}
               </h1>
 
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8 animate-fade-in-up">
-                <div className="flex items-center gap-2 text-sm text-dark font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-green" />
-                  <span>{t('homeHeroBenefit1')}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-dark font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-green" />
-                  <span>{t('homeHeroBenefit2')}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-dark font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-green" />
-                  <span>{t('homeHeroBenefit3')}</span>
-                </div>
-              </div>
-
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up">
                 <Link to="/mentori">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto shadow-lg shadow-primary/25">
+                  <Button variant="default" size="lg" className="w-full sm:w-auto shadow-none hover:shadow-none">
                     {t('homeFindMentor')}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/stani-mentor">
-                  <Button variant="heroOutline" size="lg" className="w-full sm:w-auto">
+                <Link to="/stani-mentor-info">
+                  <Button variant="heroOutline" size="lg" className="w-full sm:w-auto shadow-none hover:shadow-none">
                     <GraduationCap className="w-5 h-5 mr-2 text-primary" />
                     {t('homeBecomeMentor')}
                   </Button>
@@ -284,11 +351,9 @@ export function HomePage() {
             {/* Right Col: Mentor Card Preview */}
             <div className="flex-1 relative animate-fade-in-up w-full max-w-md lg:max-w-none">
               <div className="relative max-w-md mx-auto">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 rounded-3xl blur-2xl scale-95" />
-
-                <div className="bg-card/95 backdrop-blur-md rounded-3xl shadow-hover p-6 sm:p-8 relative z-10 border border-border">
+                <div className="bg-card rounded-3xl p-6 sm:p-8 relative z-10 border border-border shadow-none">
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center text-3xl shadow-lg shrink-0">
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-3xl shrink-0">
                       👩‍🎓
                     </div>
                     <div className="flex-1 min-w-0">
@@ -326,7 +391,7 @@ export function HomePage() {
                       </span>
                     </div>
                     <Link to="/mentori">
-                      <Button variant="default" size="sm" className="shadow-sm">
+                      <Button variant="default" size="sm" className="shadow-none hover:shadow-none">
                         {isMk ? 'Закажи час' : 'Book lesson'}
                       </Button>
                     </Link>
@@ -338,43 +403,43 @@ export function HomePage() {
         </div>
       </section>
 
+
       {/* 4. HOW IT WORKS PREVIEW */}
       <section className="py-20 container mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-dark mb-4">
+        <div className="max-w-5xl mx-auto">
+          {/* Section Header */}
+          <h2 className="text-3xl md:text-5xl font-extrabold text-dark mb-14 text-left">
             {t('homeHowItWorksTitle')}
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">
-            {t('homeHowItWorksSubtitle')}
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto mb-12">
-          {HOW_STEPS.map((step) => (
-            <div
-              key={step.step}
-              className="bg-card rounded-3xl p-6 shadow-soft border border-border hover:shadow-hover transition-all duration-300 relative group"
-            >
-              <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center text-white font-black text-lg mb-4 shadow-sm group-hover:scale-105 transition-transform">
-                {step.step}
-              </div>
-              <h3 className="text-lg font-bold text-dark mb-2">
-                {step.title}
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {step.description}
-              </p>
+          {/* Desktop Timeline Layout */}
+          <div className="hidden md:block relative my-12">
+            {/* Connecting Horizontal Line */}
+            <div className="absolute top-6 left-[12.5%] right-[12.5%] h-0.5 bg-primary/40 -translate-y-1/2 z-0" />
+
+            <div className="grid grid-cols-4 gap-4 relative z-10">
+              {HOW_STEPS.map((step, idx) => (
+                <TimelineStepItem key={step.step} step={step} index={idx} isMobile={false} />
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
 
-        <div className="text-center">
-          <Link to="/kako-raboti">
-            <Button variant="heroOutline" size="lg">
-              {t('homeHowItWorksMore')}
-              <ArrowRight className="w-4 h-4 ml-2 text-primary" />
-            </Button>
-          </Link>
+          {/* Mobile Timeline Layout */}
+          <div className="block md:hidden relative pl-6 border-l-2 border-primary/40 space-y-8 my-10 ml-4">
+            {HOW_STEPS.map((step, idx) => (
+              <TimelineStepItem key={step.step} step={step} index={idx} isMobile={true} />
+            ))}
+          </div>
+
+          {/* Button */}
+          <div className="text-center mt-14">
+            <Link to="/kako-raboti">
+              <Button variant="heroOutline" size="lg" className="shadow-none hover:shadow-none">
+                {t('homeHowItWorksMore')}
+                <ArrowRight className="w-4 h-4 ml-2 text-primary" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -623,7 +688,7 @@ export function HomePage() {
                 </div>
               </div>
 
-              <Link to="/stani-mentor">
+              <Link to="/stani-mentor-info">
                 <Button
                   variant="default"
                   size="lg"

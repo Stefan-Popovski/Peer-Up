@@ -45,7 +45,7 @@ export function HowItWorksPage() {
     {
       num: '04',
       icon: Trophy,
-      title: isMk ? 'Постигни ги твоите академски цели' : 'Achieve your academic goals',
+      title: isMk ? 'Постигнете ги Вашите академски цели' : 'Achieve your academic goals',
       description: isMk
         ? 'Гледајте како Вашите оценки и самодоверба растат! Вашиот ментор ќе ти помогне не само со моменталните задачи, туку и ќе те научи како поефикасно да учиш и да размислуваш самостојно.'
         : 'Watch your grades and confidence grow! Your mentor helps not only with current homework, but also teaches you how to study effectively and think independently.',
@@ -68,7 +68,7 @@ export function HowItWorksPage() {
     {
       feature: isMk ? 'Локација' : 'Location',
       peerUp: isMk
-        ? '100% онлајн, учи од твојата соба или каде и да си'
+        ? '100% онлајн, учете од Вашата соба или каде и да сте'
         : '100% online, learn from your room or anywhere you are',
       traditional: isMk
         ? 'Патување до наставникот, губење време во сообраќај'

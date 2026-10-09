@@ -67,12 +67,12 @@ export function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/stani-mentor" className="text-white/70 hover:text-accent transition-colors">
+                <Link to="/stani-mentor-info" className="text-white/70 hover:text-accent transition-colors">
                   {t('footerBecomeMentor')}
                 </Link>
               </li>
               <li>
-                <Link to="/stani-mentor" className="text-white/70 hover:text-accent transition-colors">
+                <Link to="/stani-mentor-info" className="text-white/70 hover:text-accent transition-colors">
                   {t('footerEarnings')}
                 </Link>
               </li>
